@@ -1,0 +1,23 @@
+shell_command:
+  send_smarther_webhooks: "python3 /config/smarther/smarther.py webhooks '{{data_web}}' 0"
+
+automation:
+  - id: 'smarther_webhook_update'
+    alias: smarther_webhook_update
+    mode: queued
+    trigger:
+    - platform: webhook
+      webhook_id: smarther475600
+    condition: []
+    action:
+
+    #- data_template:
+    #      message: '{{ trigger.json |tojson }}'
+    #  service: notify.telegram
+
+    - service: shell_command.send_smarther_webhooks
+      data_template:
+        data_web: '{{(trigger.json |tojson) |safe}}'
+      
+    - service: homeassistant.update_entity
+      entity_id: sensor.smarther_update_nome_termostato, sensor.smarther_temperatura_nome_termostato, sensor.smarther_umidita_nome_termostato, sensor.smarther_funzione_nome_termostato, sensor.smarther_modo_nome_termostato, sensor.smarther_set_point_nome_termostato, sensor.smarther_stato_nome_termostato, sensor.smarther_programma_nome_termostato, sensor.smarther_webhookdelay_nome_termostato, sensor.smarther_boost_type_nome_termostato

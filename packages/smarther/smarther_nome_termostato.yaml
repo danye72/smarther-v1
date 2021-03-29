@@ -1,0 +1,1777 @@
+homeassistant:
+  customize:
+    package.node_anchors:
+       
+    ##--------------------- IMPOSTAZIONI DEL PACKAGE ---------------------##
+      #Sostituire l'ultima parte dei comandi con il nome del termostato impostato sull'app che non deve contenere spazi
+
+      setting:
+        command_cat: &command_cat 'cat /config/smarther/nome_termostato.json'
+    ##--------------------------------------------------------------------##
+
+shell_command:
+  api_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato valori_api 0"
+  set_point_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato set_point '{{data}}'"
+  automatico_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato automatico 0"
+  manuale_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato manuale '{{data}}'"
+  protezione_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato protezione '{{data}}'"
+  boost_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato boost '{{data}}'"
+  heating_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato funzione heating"
+  cooling_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato funzione cooling"
+  lista_programmi_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato get_programs 0"
+  set_program_smarther_nome_termostato: "python3 /config/smarther/smarther.py nome_termostato programma '{{ states('input_select.smarther_nome_termostato_programmi') }}'"
+
+########################################### ESEMPIO PER SETPOINT ##########################
+#smarther_nome_termostato_cmd_setpoint:
+#  sequence:     
+#    - service: shell_command.set_point_smarther_nome_termostato
+#      data_template:
+#        data: '{{ states.input_number.smarther_nome_termostato_set_sp.state }}' # variabile che contiene il dato numerico
+############################################################################################
+
+
+
+climate:
+  - platform: generic_thermostat
+    name: smarther_nome_termostato
+    heater: input_boolean.smarther_nome_termostato_on_off
+    target_sensor: sensor.smarther_temperatura_nome_termostato
+    min_temp: 7
+    max_temp: 40
+    precision: 0.1
+
+
+counter:
+  smarther_nome_termostato_boost_remaining:
+    step: 1   
+
+
+#########################################################
+#                                                       #
+#                        INPUT                          #
+#                                                       #
+#########################################################
+
+  #### INPUT BOOLEAN ####
+
+input_boolean:
+  smarther_nome_termostato_on_off:
+
+  smarther_nome_termostato_on_off2:
+
+  smarther_nome_termostato_boost_state:
+
+  smarther_nome_termostato_info:
+    initial: 'off'
+
+  temperatura_smarther_nome_termostato:
+    initial: 'off'
+
+  umidita_smarther_nome_termostato:
+    initial: 'off'
+
+  climate_smarther_nome_termostato:
+    initial: 'on'
+
+  delay_smarther_nome_termostato:
+    initial: 'off'
+
+  #### INPUT SELECT #### 
+
+input_select:
+  smarther_nome_termostato_boost_mode:
+    name: smarther_nome_termostato Boost Mode
+    options:
+      - 0.1
+      - 30
+      - 60
+      - 90
+    icon: mdi:play-speed
+
+  smarther_nome_termostato_programmi:
+    options:
+      - "no_prog."
+    name: programma nome_termostato
+    icon: mdi:calendar-clock
+
+
+  #### INPUT NUMBER #### 
+
+input_number:
+  smarther_nome_termostato_set_sp:
+    name: Smarther_nome_termostato set temperature
+    min: 7
+    max: 40
+    step: 0.1
+
+  smarther_nome_termostato_boost_remaining:
+    name: smarther_nome_termostato_boost_remaining
+    min: 0
+    max: 5600
+    step: 1
+
+#########################################################
+#                                                       #
+#                        SENSOR                         #
+#                                                       #
+#########################################################
+
+sensor:
+  - platform: command_line
+    name: "smarther_temperatura_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.temperatura }}"
+    unit_of_measurement: "°C"
+    scan_interval: 600
+    
+  - platform: command_line
+    name: "smarther_umidita_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.umidita }}"
+    unit_of_measurement: "%"
+    scan_interval: 600
+
+  - platform: command_line
+    name: "smarther_update_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.aggiornato }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+   ### funzione
+  - platform: command_line
+    name: "smarther_funzione_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.funzione }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+   ### modo
+  - platform: command_line
+    name: "smarther_modo_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.modo }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+   ### set point
+  - platform: command_line
+    name: "smarther_set_point_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.set_point|round (1) }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+    ### stato
+  - platform: command_line
+    name: "smarther_stato_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.stato }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+    ### programma
+  - platform: command_line
+    name: "smarther_programma_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.programma_attivo }}"
+    unit_of_measurement: ""
+    scan_interval: 600
+
+  - platform: command_line
+    name: "smarther_webhookdelay_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.delay }}"
+    unit_of_measurement: "Sec"
+
+  - platform: command_line
+    name: "smarther_boost_type_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.boost_type }}"
+    unit_of_measurement: ""
+
+  - platform: command_line
+    name: "smarther_boost_remaining_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.boost_remaining }}"
+    unit_of_measurement: ""
+  
+  - platform: command_line
+    name: "smarther_lista_programmi_nome_termostato"
+    command: *command_cat
+    value_template: "{{ value_json.select_programmi }}"
+
+  #### SENSOR TEMPLATE ####
+
+  - platform: template
+    sensors:
+
+      ### Nome Smarther
+      smarther_nome_termostato_name:
+        value_template: >
+            nome_termostato
+
+    ###differenza tra input_number.smarther_nome_termostato_set_sp e sensor.smarther_set_point_nome_termostato
+      smarther_nome_termostato_set_point_difference:
+        value_template: "{{ states('input_number.smarther_nome_termostato_set_sp') | float - states('sensor.smarther_set_point_nome_termostato') | float }}"
+
+    ###sensore che identifica il tipo di attività del termostato
+      smarther_nome_termostato_activity_type:
+        value_template: "{{ state_attr('climate.smarther_nome_termostato', 'hvac_action') }}"
+
+    ###sensore che identifica la durata massima del counter
+      smarther_nome_termostato_max_duration_boost:
+        value_template: >-
+          {% if is_state('sensor.smarther_boost_type_nome_termostato', '30') %}
+            1800
+          {% elif is_state('sensor.smarther_boost_type_nome_termostato', '60') %}
+            3600
+          {% elif is_state('sensor.smarther_boost_type_nome_termostato', '90') %}
+            5400
+          {% else %}
+            0
+          {% endif %}
+
+
+#########################################################
+#                                                       #
+#                    BINARY SENSOR                      #
+#                                                       #
+#########################################################
+
+binary_sensor:
+
+  - platform: template
+    sensors:
+    
+    ### stato relè del termostato
+      smarther_nome_termostato_stato_custom:
+        value_template: >-
+            {{ is_state('sensor.smarther_stato_nome_termostato', 'ACTIVE') }}
+        icon_template: >-
+            {% set funzione = states('sensor.smarther_funzione_nome_termostato') %}
+            {% if funzione == 'HEATING' %}mdi:fire
+            {% elif funzione == 'COOLING' %}mdi:snowflake
+            {% endif %}
+        device_class: power
+
+    ### stato funzionamento off o protection
+      smarther_nome_termostato_spento:
+        value_template: "{{ is_state('sensor.smarther_modo_nome_termostato', 'PROTECTION') or is_state('sensor.smarther_modo_nome_termostato', 'OFF') }}"
+        icon_template: mdi:power
+        device_class: power
+
+    ### stato funzionamento in automatico
+      smarther_nome_termostato_auto:
+        value_template: "{{ is_state('sensor.smarther_modo_nome_termostato', 'AUTOMATIC') }}"
+        icon_template: mdi:autorenew
+        device_class: power
+
+    ### stato funzionamento in manuale
+      smarther_nome_termostato_man:
+        value_template: "{{ is_state('sensor.smarther_modo_nome_termostato', 'MANUAL') }}"
+        icon_template: mdi:hand-right
+        device_class: power
+
+    ### stato funzionamento in boost
+      smarther_nome_termostato_boost:
+        value_template: "{{ is_state('sensor.smarther_modo_nome_termostato', 'BOOST') }}"
+        icon_template: mdi:play-speed
+        device_class: power
+ 
+
+    
+#########################################################
+#                                                       #
+#                    AUTOMATION                         #
+#                                                       #
+#########################################################
+
+automation:
+
+# richiedo i valori dello smarther se non ho aggiornamenti webhook da tot minuti
+  - id: 'smarther_nome_termostato_update'
+    alias: smarther_nome_termostato_update
+    trigger:
+      - platform: time_pattern
+        minutes: "/1"
+    condition:
+      condition: template
+      value_template: '{{ (as_timestamp(states.sensor.time.last_changed) - as_timestamp(states.sensor.smarther_update_nome_termostato.last_changed)) >= 300 }}'     
+    action:
+    - service: shell_command.api_smarther_nome_termostato
+    - service: script.smarther_nome_termostato_aggiorna_sensori
+    mode: 'single'
+
+# richiedo i valori dello smarther all'avvio di Home assiatant
+  - id: 'smarther_nome_termostato_start'
+    alias: smarther_nome_termostato_start
+    trigger:
+      - event: start
+        platform: homeassistant
+    action:
+      - service: shell_command.api_smarther_nome_termostato
+      - service: script.smarther_nome_termostato_aggiorna_sensori
+    mode: 'single'
+
+  #### AZZERARE VALORI DOPO AVER PREMUTO BOOST ####
+  - id: 'smarther_nome_termostato_azzera_vari_input'
+    alias: smarther_nome_termostato Azzera vari input dopo aver premuto il boost
+    trigger:
+      platform: state
+      entity_id: input_number.smarther_nome_termostato_set_boost
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.smarther_nome_termostato_switch_visual
+          value: "0.0"
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.smarther_nome_termostato_change_temp
+    mode: 'single'
+
+  #### COMANDO BOOST ####
+  - id: 'smarther_nome_termostato_richiama_script_comando_boost'
+    alias: smarther_nome_termostato Richiama Script comando boost
+    trigger:
+      platform: state
+      entity_id: input_boolean.smarther_nome_termostato_change_boost
+      to: 'on'
+      for: '00:00:05'
+    action:
+      - service: script.turn_on
+        entity_id: script.smarther_nome_termostato_cmd_boost
+    mode: 'single'
+
+  - id: temperatura_smarther_nome_termostato
+    alias: Temperatura smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.delay_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - delay: 00:00:05
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    mode: 'restart'
+
+
+  - id: umidita_smarther_nome_termostato
+    alias: Umidita smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.delay_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - delay: 00:00:05
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    mode: 'restart'
+    
+  - id: delay_smarther_nome_termostato
+    alias: delay smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.delay_smarther_nome_termostato
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - delay: 00:00:05
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    mode: 'restart'
+
+  - id: info_smarther_nome_termostato
+    alias: Info smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.smarther_nome_termostato_info
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.delay_smarther_nome_termostato
+    mode: 'restart'
+
+  - id: climate_smarther_nome_termostato
+    alias: Climate smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.smarther_nome_termostato_info
+      from: 'on'
+      to: 'off'
+    condition:
+    - condition: state
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.delay_smarther_nome_termostato
+      state: 'off'
+    action:
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    mode: 'restart'
+
+  - id: climate_on_smarther_nome_termostato
+    alias: climate_on_smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.climate_smarther_nome_termostato
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.delay_smarther_nome_termostato
+    mode: 'restart'
+
+#### CLIMATE
+
+
+  - id: smarther_nome_termostato_set_input_boolean_on
+    alias: smarther_nome_termostato set input boolean on
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_stato_nome_termostato
+      to: ACTIVE
+    condition: []
+    action:
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_on_off
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_set_input_boolean_off
+    alias: smarther_nome_termostato set input boolean on
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_stato_nome_termostato
+      to: INACTIVE
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_on_off
+    mode: 'single'
+  
+  
+  - id: restore_state_smarter_nome_termostato_on_boot
+    alias: Restore smarther_nome_termostato on boot
+    description: ''
+    trigger:
+    - platform: homeassistant
+      event: start
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_temperature
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_program
+    - service: input_select.set_options
+      data:
+        options: "{{ states('sensor.smarther_lista_programmi_nome_termostato') }}"
+        entity_id: input_select.smarther_nome_termostato_programmi
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.smarther_nome_termostato_programmi
+        option: "{{states('sensor.smarther_programma_nome_termostato')}}"
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_program
+    - delay: 00:00:40
+    - service: climate.set_temperature
+      data:
+        temperature: "{{ states('input_number.smarther_nome_termostato_set_sp') }}"
+        entity_id: climate.smarther_nome_termostato
+    - delay: 00:00:03
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_temperature
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_set_sp_input_number
+    alias: smarther_nome_termostato set sp input number
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: climate.smarther_nome_termostato
+      attribute: temperature
+    condition: []
+    action:
+    - service: input_number.set_value
+      data_template:
+        value: "{{ state_attr('climate.smarther_nome_termostato', 'temperature') | float }}"
+        entity_id: input_number.smarther_nome_termostato_set_sp
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_set_temperature
+    alias: smarther_nome_termostato set temperature
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_number.smarther_nome_termostato_set_sp
+      for: 00:00:03
+    condition: []
+    action:
+    - service: script.smarther_nome_termostato_set_temperature
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_set_temperature_da_app
+    alias: smarther_nome_termostato set temperature da app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_set_point_nome_termostato
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.smarther_nome_termostato_set_point_difference
+        state: '0.0'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_temperature
+    - service: script.smarther_nome_termostato_set_temperature_da_app
+      data: {}
+    - delay: 00:00:01
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_temperature
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_on_icon_on
+    alias: smarther_nome_termostato on icon on
+    description: ''
+    trigger:
+    - platform: numeric_state
+      entity_id: climate.smarther_nome_termostato
+      above: '7'
+      attribute: temperature
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: heat
+        entity_id: climate.smarther_nome_termostato
+    mode: 'restart'
+  
+ 
+  - id: smarther_nome_termostato_press_off_button_from_app
+    alias: smarther_nome_termostato press off button from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.smarther_nome_termostato_spento
+      from: 'off'
+      to: 'on'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: climate.smarther_nome_termostato
+        state: 'off'
+    action:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: 'off'
+        entity_id: climate.smarther_nome_termostato
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_press_off_button
+    alias: smarther_nome_termostato press off button
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: climate.smarther_nome_termostato
+      to: 'off'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.smarther_nome_termostato_spento
+        state: 'on'
+    action:
+    - service: script.smarther_nome_termostato_off
+      data: {}
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_30_to_60_from_app
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:03
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - service: input_select.select_option
+      data:
+        option: 0.1
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - delay: 00:00:01
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_30_to_60_from_app
+    mode: 'single'
+
+
+#### BOOST
+
+  - id: smarther_nome_termostato_input_boolean.smarther_nome_termostato_boost_state_on
+    alias: smarther_nome_termostato_input_boolean.smarther_nome_termostato_boost_state_on
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.smarther_nome_termostato_boost
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_boost_state
+    mode: single
+
+  - id: smarther_nome_termostato_input_boolean.smarther_nome_termostato_boost_state_off
+    alias: smarther_nome_termostato_input_boolean.smarther_nome_termostato_boost_state_off
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.smarther_nome_termostato_boost
+      from: 'on'
+      to: 'off'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_boost_state
+    mode: single
+
+  - id: restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    alias: restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    description: ''
+    trigger:
+    - platform: homeassistant
+      event: start
+    condition:
+    - condition: state
+      entity_id: binary_sensor.smarther_nome_termostato_boost
+      state: 'on'
+    action:
+    - repeat:
+        until:
+        - condition: state
+          entity_id: counter.smarther_nome_termostato_boost_remaining
+          state: '0'
+        - condition: state
+          entity_id: binary_sensor.smarther_nome_termostato_boost
+          state: 'off'
+        - condition: state
+          entity_id: sensor.smarther_nome_termostato_max_duration_boost
+          state: ''
+        sequence:
+        - service: counter.decrement
+          data: {}
+          entity_id: counter.smarther_nome_termostato_boost_remaining
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+    mode: single
+
+
+  - id: interrupt_restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    alias: interrupt_restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_nome_termostato_max_duration_boost
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.restore_counter_smarther_nome_termostato_boost_remaining_on_boot
+    mode: single
+
+
+  - id: smarther_nome_termostato_set_input_number_smarther_nome_termostato_boost_remaining
+    alias: smarther_nome_termostato_set_input_number_smarther_nome_termostato_boost_remaining
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+    condition: []
+    action:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.smarther_nome_termostato_boost_remaining
+        value: >
+          {% if is_state('sensor.smarther_boost_type_nome_termostato', '30') %}
+          1800
+          {% elif is_state('sensor.smarther_boost_type_nome_termostato', '60') %}
+          3600
+          {% elif is_state('sensor.smarther_boost_type_nome_termostato', '90') %}
+          5400
+          {% else %}
+          0
+          {% endif %}
+    mode: single
+
+
+  - id: smarther_nome_termostato_correct_input_number_smarther_nome_termostato_boost_remaining
+    alias: smarther_nome_termostato_correct_input_number_smarther_nome_termostato_boost_remaining
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_remaining_nome_termostato
+    condition: []
+    action:
+    - service: counter.configure
+      data_template:
+        initial: "{{ states('sensor.smarther_boost_remaining_nome_termostato') |int }}"
+        entity_id: counter.smarther_nome_termostato_boost_remaining
+    - service: counter.reset
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    mode: single
+
+
+
+  - id: smarther_nome_termostato_boost30
+    alias: smarther_nome_termostato Boost30
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      to: '30'
+      for: 00:00:03
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: heat
+        entity_id: climate.smarther_nome_termostato
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost60
+    alias: smarther_nome_termostato Boost60
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      to: '60'
+      for: 00:00:03
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: heat
+        entity_id: climate.smarther_nome_termostato
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost90
+    alias: smarther_nome_termostato Boost90
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      to: '90'
+      for: 00:00:03
+    condition: []
+    action:
+    - service: climate.set_hvac_mode
+      data:
+        hvac_mode: heat
+        entity_id: climate.smarther_nome_termostato
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost_off
+    alias: smarther_nome_termostato Boost off
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.smarther_nome_termostato_boost
+      from: 'on'
+      to: 'off'
+#    - platform: state
+#      entity_id: input_select.smarther_nome_termostato_boost_mode
+#      to: '0.1'
+#      for: 00:00:03
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+#    - service: script.smarther_nome_termostato_off
+#      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost30_from_app
+    alias: smarther_nome_termostato boost30 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '30'
+      from: '0'
+    condition:
+    - condition: numeric_state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      below: '1'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: input_select.select_option
+      data:
+        option: 30
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost60_from_app
+    alias: smarther_nome_termostato boost60 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '60'
+      from: '0'
+    condition:
+    - condition: numeric_state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      below: '1'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: input_select.select_option
+      data:
+        option: 60
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost90_from_app
+    alias: smarther_nome_termostato boost90 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '90'
+      from: '0'
+    condition:
+    - condition: numeric_state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      below: '1'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: input_select.select_option
+      data:
+        option: 90
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_boost_end
+    alias: smarther_nome_termostato boost end
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: binary_sensor.smarther_nome_termostato_boost
+      from: 'on'
+      to: 'off'
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_30_to_60_from_app
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost_off
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - service: input_select.select_option
+      data:
+        option: 0.1
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - delay: 00:00:01
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_30_to_60_from_app
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost_off
+    mode: 'single'
+
+
+#### CHANGE BOOST TYPE
+
+  - id: smarther_nome_termostato_change_boost30_o_90_to_60
+    alias: smarther_nome_termostato change boost30 o 90 to 60
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      from: '30'
+      to: '60'
+      for: '00:00:03'
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      from: '90'
+      to: '60'
+      for: '00:00:03'
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 60
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    mode: 'single'
+
+
+  - id: smarther_nome_termostato_change_boost30_o_60_to_90
+    alias: smarther_nome_termostato change boost30 o 60 to 90
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      from: '30'
+      to: '90'
+      for: '00:00:03'
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      from: '60'
+      to: '90'
+      for: '00:00:03'
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 90
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    mode: 'single'
+
+
+  - id: smarther_nome_termostato_change_boost90_o_60_to_30
+    alias: smarther_nome_termostato_change_boost90 o 60 to 30
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+      from: '0.1'
+      to: '30'
+      for: '00:00:03'
+    condition: []
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 30
+      entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_cmd_boost
+      data: {}
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    mode: 'single'
+
+
+  - id: smarther_nome_termostato_change_boost30_o_60_to_90_from_app
+    alias: smarther_nome_termostato - change boost30 o 60 to 90 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '90'
+      from: '30'
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '90'
+      from: '60'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+        state: '90'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 90
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_change_boost90_o_30_to_60_from_app
+    alias: smarther_nome_termostato change boost90 o 30 to 60 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      from: '90'
+      to: '60'
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '60'
+      from: '30'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+        state: '60'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 60
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    mode: 'single'
+  
+  
+  - id: smarther_nome_termostato_change_boost90_o_60_to_30_from_app
+    alias: smarther_nome_termostato change boost90 o 60 to 30 from app
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      from: '90'
+      to: '30'
+    - platform: state
+      entity_id: sensor.smarther_boost_type_nome_termostato
+      to: '30'
+      from: '60'
+    condition:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+        state: '30'
+    action:
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: script.turn_off
+      data: {}
+      entity_id: script.smarther_nome_termostato_start_boost_counter
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_off
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    - delay: 00:00:01
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - delay: 00:00:01
+    - service: input_select.select_option
+      data:
+        option: 30
+        entity_id: input_select.smarther_nome_termostato_boost_mode
+    - service: script.smarther_nome_termostato_start_boost_counter
+      data: {}
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost30
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_boost90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_60_to_90
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost30_o_90_to_60
+    - service: automation.turn_on
+      data: {}
+      entity_id: automation.smarther_nome_termostato_change_boost90_o_60_to_30
+    mode: 'single'
+
+
+#### PROGRAMMI
+
+  - id: smarther_nome_termostato_set_program
+    alias: smarther_nome_termostato set program
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_select.smarther_nome_termostato_programmi
+      for: 00:00:03
+    condition: []
+    action:
+    - service: shell_command.set_program_smarther_nome_termostato
+      data: {}
+      entity_id: automation.smarther_nome_termostato_set_programma_attivo
+    - service: script.smarther_nome_termostato_aggiorna_sensori
+    mode: 'single'
+    
+
+
+  - id: smarther_nome_termostato_set_programma_attivo
+    alias: smarther_nome_termostato_set_programma_attivo
+    trigger:
+      - platform: state
+        entity_id: sensor.smarther_programma_nome_termostato
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.smarther_nome_termostato_programmi
+          option: '{{states("sensor.smarther_programma_nome_termostato")}}'
+    mode: 'single'
+
+#########################################################
+#                                                       #
+#                      SCRIPT                           #
+#                                                       #
+#########################################################
+
+script:
+  smarther_nome_termostato_off:
+    sequence:
+      - service: shell_command.protezione_smarther_nome_termostato
+        data_template:
+          data: '{{ states.input_number.smarther_nome_termostato_set_sp.state }}'
+      - service: script.smarther_nome_termostato_aggiorna_sensori
+
+
+  ##### INVIO COMANDO BOOST ####
+  smarther_nome_termostato_cmd_boost:
+    sequence:
+      - wait_template: "{% if states('input_select.smarther_nome_termostato_boost_mode') != '0.1' %} true {%else%} false {%endif%}"
+        timeout: '00:00:01'
+        continue_on_timeout: false
+      - service: shell_command.boost_smarther_nome_termostato
+        data_template:
+          data: '{{ states.input_select.smarther_nome_termostato_boost_mode.state|int }}'
+      - service: script.smarther_nome_termostato_aggiorna_sensori
+
+
+  smarther_nome_termostato_start_boost_counter:
+    alias: smarther_nome_termostato_start_boost_counter
+    sequence:
+    - service: counter.configure
+      data_template:
+        entity_id: counter.smarther_nome_termostato_boost_remaining
+        initial: '{{states(''input_number.smarther_nome_termostato_boost_remaining'')}}'
+    - service: counter.reset
+      data: {}
+      entity_id: counter.smarther_nome_termostato_boost_remaining
+    - repeat:
+        until:
+        - condition: state
+          entity_id: counter.smarther_nome_termostato_boost_remaining
+          state: '0'
+        - condition: state
+          entity_id: binary_sensor.smarther_nome_termostato_boost
+          state: 'off'
+        sequence:
+        - service: counter.decrement
+          data: {}
+          entity_id: counter.smarther_nome_termostato_boost_remaining
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+    mode: single
+
+
+  smarther_nome_termostato_set_temperature:
+    alias: smarther_nome_termostato Cambio temperatura
+    sequence:
+    - service: shell_command.set_point_smarther_nome_termostato
+      data_template:
+        data: '{{ states.input_number.smarther_nome_termostato_set_sp.state }}'
+    mode: 'single'
+
+
+  smarther_nome_termostato_set_temperature_da_app:
+    alias: smarther_nome_termostato Cambio temperatura da app
+    sequence:
+    - service: climate.set_temperature
+      data_template:
+        entity_id: climate.smarther_nome_termostato
+        temperature: '{{ states.sensor.smarther_set_point_nome_termostato.state }}'
+    mode: 'single'
+
+
+# carico la lista dei programmi dello smarther
+  smarther_nome_termostato_carica_programmi:
+    alias: smarther_nome_termostato carica programmi
+    sequence:
+    - service: shell_command.lista_programmi_smarther_nome_termostato
+    - service: homeassistant.update_entity
+      entity_id: sensor.smarther_lista_programmi_nome_termostato
+    - service: input_select.set_options
+      data:
+        entity_id: input_select.smarther_nome_termostato_programmi
+        options: '{{ states("sensor.smarther_lista_programmi_nome_termostato") }}'
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.smarther_nome_termostato_programmi
+        option: '{{states("sensor.smarther_programma_nome_termostato")}}'
+    mode: 'single'
+
+
+# aggiorno i sensori
+  smarther_nome_termostato_aggiorna_sensori:
+    sequence:
+    - service: homeassistant.update_entity
+      entity_id: sensor.smarther_update_nome_termostato, sensor.smarther_temperatura_nome_termostato, sensor.smarther_umidita_nome_termostato, sensor.smarther_funzione_nome_termostato, sensor.smarther_modo_nome_termostato, sensor.smarther_set_point_nome_termostato, sensor.smarther_stato_nome_termostato, sensor.smarther_programma_nome_termostato, sensor.smarther_boost_type_nome_termostato 

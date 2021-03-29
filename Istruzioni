@@ -1,0 +1,18 @@
+1)  All'interno del file card ed ai files che si trovano nella cartella packages sostituisci tutte le stringhe "nome_termostato" con il reale nome del termostato configurato sull'app bticino, attenzione perchè non deve contenere spazi e caratteri maiuscoli!!!
+    
+2) copia i file con le rispettive cartelle nella cartella principale di configurazione del tuo home assistant creando le cartelle dove assenti.
+
+3) edita il file smarther/smarther.py alla riga 6, mettendo tra virgolette la path completa della cartella smarther, in hassio dovrebbe essere config/smarther/ (dovresti già trovarlo....)
+
+4) in lovelace, crea una card manuale, copiando il codice del file card, sostituisci "nome_termostato" con il reale nome del termostato configurato sull'app bticino
+
+5)  Edita il file smarther/conf_smarther.json con i tuoi dati, facendo attenzione a mettere al posto di "https://your-home-assistant:8123/api/webhook/smarther475600" il giusto indirizzo prima di :8123, il resto lascialo uguale.
+    "code" si ricava mettendo nel browser l'indirizzo indicato di seguito, prima però devi sostituire client_id=xxxxxxxxx, con il tuo client_id!!!    
+    https://partners-login.eliotbylegrand.com/authorize?client_id=xxxxxxxxx&response_type=code&redirect_uri=http://www (sostituisci la parte finale "redirect_uri=http://www" con l'indirizzo della tua applicazione web registrata sul sito legrand)     
+    fai il login e accetta tutto, il code è la key nell'indirizzo del browser (magari nelle prossime versioni sarà automatica l'estrazione). Una volta completato questo passaggio devi riavviare quasi subito home assistant altrimenti il "code" scade e va rigenerato ripetendo il punto 5.
+ 
+6) Riavviare home assistant previa verifica di eventuali errori
+
+7) Fatto!
+
+
