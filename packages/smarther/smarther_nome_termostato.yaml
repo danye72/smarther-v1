@@ -201,7 +201,22 @@ sensor:
     command: *command_cat
     value_template: "{{ value_json.select_programmi }}"
 
+  - platform: history_stats
+    name: smarther_nome_termostato_on_today
+    entity_id: sensor.smarther_stato_nome_termostato
+    state: 'ACTIVE'
+    type: time
+    start: '{{ now().replace(hour=0, minute=0, second=0) }}'
+    end: '{{ now() }}'
+
+
   #### SENSOR TEMPLATE ####
+
+  - platform: template
+    sensors:
+      smarther_nome_termostato_on_today_in_minutes:
+        friendly_name: "Thermostat nome_termostato ON today in minutes"
+        value_template: "{{ state_attr('sensor.smarther_nome_termostato_on_today', 'value')}}"
 
   - platform: template
     sensors:
@@ -514,28 +529,34 @@ automation:
     description: ''
     trigger:
     - platform: state
-      entity_id: sensor.smarther_stato_nome_termostato
-      to: ACTIVE
+      entity_id: binary_sensor.smarther_nome_termostato_spento
+      to: 'off'
     condition: []
     action:
     - service: input_boolean.turn_on
       data: {}
       entity_id: input_boolean.smarther_nome_termostato_on_off
+    - service: climate.turn_on
+      data: {}
+      entity_id: climate.smarther_nome_termostato
     mode: 'single'
   
   
   - id: smarther_nome_termostato_set_input_boolean_off
-    alias: smarther_nome_termostato set input boolean on
+    alias: smarther_nome_termostato set input boolean off
     description: ''
     trigger:
     - platform: state
-      entity_id: sensor.smarther_stato_nome_termostato
-      to: INACTIVE
+      entity_id: binary_sensor.smarther_nome_termostato_spento
+      to: 'on'
     condition: []
     action:
     - service: input_boolean.turn_off
       data: {}
       entity_id: input_boolean.smarther_nome_termostato_on_off
+    - service: climate.turn_off
+      data: {}
+      entity_id: climate.smarther_nome_termostato
     mode: 'single'
   
   
