@@ -111,7 +111,7 @@ cards:
         yaxis:
           axisBorder:
             show: true
-            offsetX: -1
+            offsetX: -4
             height: 0
           decimalsInFloat: 1
           forceNiceScale: true
@@ -197,7 +197,7 @@ cards:
         yaxis:
           axisBorder:
             show: true
-            offsetX: -1
+            offsetX: -4
             height: 0
           decimalsInFloat: 1
           forceNiceScale: true
@@ -684,7 +684,7 @@ cards:
         yaxis:
           axisBorder:
             show: true
-            offsetX: -1
+            offsetX: -4
             height: 0
           decimalsInFloat: 1
           forceNiceScale: true
