@@ -1,3 +1,12 @@
+    ##--------------------- ISTRUZIONI DELLA CARD ---------------------##
+
+       # 1) Installare con HACS i seguenti Fronted: layout-card, bar-card, stack-in-card, button-card, apexcharts-card e card-mod
+       # 2) Sostituire tutti i "nome_termostato" con il nome del tuo termostato
+       # 3) Si consiglia di usare nomi brevi per i programmi.
+       # 4) Creare una card di tipo Manual e copiare il codice sottostante
+
+    ##--------------------------------------------------------------------##
+
 type: 'custom:layout-card'
 style: |
   ha-card {
