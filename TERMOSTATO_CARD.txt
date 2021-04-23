@@ -41,173 +41,195 @@ cards:
       - entity: input_boolean.temperatura_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:apexcharts-card'
-      style: |
-        ha-card { 
-          box-shadow: 0px 0px;
-          border-radius: 20px 0px 0px 20px!important;
-          margin-top: -4px !important;
-          margin-left: -8px !important;
-          width: 265px !important;
-          height: 280px !important;
-        }
-      graph_span: 24h
-      header:
-        show: true
-        show_states: true
-        colorize_states: false
-        title: Temperatura
+      type: 'custom:config-template-card'
+      variables:
+        - 'states[''input_select.smarther_nome_termostato_language''].state'
       entities:
-        - entity: sensor.smarther_temperatura_nome_termostato
-          type: area
-          color: orange
-          name: Termostato nome_termostato
-          show:
-            extremas: true
-      apex_config:
-        chart:
-          height: 190px
-          width: 265px
-        tooltip:
-          enabled: false
-        stroke:
-          width: 2
-          curve: smooth
-        fill:
-          type: gradient
-          gradient:
-            type: vertical
-            shadeIntensity: 0
-            opacityFrom: 1
-            opacityTo: 0
-            stops:
-              - 0
-              - 98
-              - 100
-        grid:
+        - input_select.smarther_nome_termostato_language
+      card:
+        type: 'custom:apexcharts-card'
+        style: |
+          ha-card { 
+            box-shadow: 0px 0px;
+            border-radius: 20px 0px 0px 20px!important;
+            margin-top: -4px !important;
+            margin-left: -8px !important;
+            width: 265px !important;
+            height: 280px !important;
+          }
+        graph_span: 24h
+        header:
           show: true
-          yaxis:
-            lines:
-              show: true
+          show_states: true
+          colorize_states: false
+          title: >-
+            ${vars[0] === 'EN' ? 'TEMPERATURE' : vars[0] === 'IT' ?
+            'TEMPERATURA'
+
+            : 'no language'}
+        entities:
+          - entity: sensor.smarther_temperatura_nome_termostato
+            type: area
+            color: orange
+            name: >-
+              ${vars[0] === 'EN' ? 'Thermostat nome_termostato' : vars[0] === 'IT' ?
+              'Termostato nome_termostato' : 'no language'}
+            show:
+              extremas: true
+        apex_config:
+          chart:
+            height: 190px
+            width: 265px
+          tooltip:
+            enabled: false
+          stroke:
+            width: 2
+            curve: smooth
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0
+              opacityFrom: 1
+              opacityTo: 0
+              stops:
+                - 0
+                - 98
+                - 100
+          grid:
+            show: true
+            yaxis:
+              lines:
+                show: true
+            xaxis:
+              lines:
+                show: true
           xaxis:
-            lines:
+            axisBorder:
               show: true
-        xaxis:
-          axisBorder:
-            show: true
-            offsetX: -3
-          forceNiceScale: true
-          labels:
-            offsetY: -3
-            hideOverlappingLabels: true
-            trim: false
-            style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
-            datetimeFormatter:
-              hour: H
-              day: d/M
-        yaxis:
-          axisBorder:
-            show: true
-            offsetX: -4
-            height: 0
-          decimalsInFloat: 1
-          forceNiceScale: true
-          labels:
-            hideOverlappingLabels: false
-            trim: false
-            style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
+              offsetX: -3
+            forceNiceScale: true
+            labels:
+              offsetY: -3
+              hideOverlappingLabels: true
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+              datetimeFormatter:
+                hour: H
+                day: d/M
+          yaxis:
+            axisBorder:
+              show: true
+              offsetX: -4
+              height: 0
+            decimalsInFloat: 1
+            forceNiceScale: true
+            labels:
+              hideOverlappingLabels: false
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
   - type: conditional
     conditions:
       - entity: input_boolean.umidita_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:apexcharts-card'
-      style: |
-        ha-card { 
-          box-shadow: 0px 0px;
-          border-radius: 20px 0px 0px 20px!important;
-          margin-top: -4px !important;
-          margin-left: -8px !important;
-          width: 265px !important;
-          height: 280px !important;
-        }
-      graph_span: 24h
-      header:
-        show: true
-        show_states: true
-        colorize_states: false
-        title: Umidità
+      type: 'custom:config-template-card'
+      variables:
+        - 'states[''input_select.smarther_nome_termostato_language''].state'
       entities:
-        - entity: sensor.smarther_umidita_nome_termostato
-          type: area
-          color: lightblue
-          name: Termostato nome_termostato
-          show:
-            extremas: true
-      apex_config:
-        chart:
-          height: 190px
-          width: 265px
-        tooltip:
-          enabled: false
-        stroke:
-          width: 2
-          curve: smooth
-        fill:
-          type: gradient
-          gradient:
-            type: vertical
-            shadeIntensity: 0
-            opacityFrom: 1
-            opacityTo: 0
-            stops:
-              - 0
-              - 98
-              - 100
-        grid:
+        - input_select.smarther_nome_termostato_language
+      card:
+        type: 'custom:apexcharts-card'
+        style: |
+          ha-card { 
+            box-shadow: 0px 0px;
+            border-radius: 20px 0px 0px 20px!important;
+            margin-top: -4px !important;
+            margin-left: -8px !important;
+            width: 265px !important;
+            height: 280px !important;
+          }
+        graph_span: 24h
+        header:
           show: true
-          yaxis:
-            lines:
-              show: true
+          show_states: true
+          colorize_states: false
+          title: |-
+            ${vars[0] === 'EN' ? 'HUMIDITY' : vars[0] === 'IT' ? 'UMIDITA\''
+            : 'no language'}
+        entities:
+          - entity: sensor.smarther_umidita_nome_termostato
+            type: area
+            color: lightblue
+            name: >-
+              ${vars[0] === 'EN' ? 'Thermostat nome_termostato' : vars[0] === 'IT' ?
+              'Termostato nome_termostato' : 'no language'}
+            show:
+              extremas: true
+        apex_config:
+          chart:
+            height: 190px
+            width: 265px
+          tooltip:
+            enabled: false
+          stroke:
+            width: 2
+            curve: smooth
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0
+              opacityFrom: 1
+              opacityTo: 0
+              stops:
+                - 0
+                - 98
+                - 100
+          grid:
+            show: true
+            yaxis:
+              lines:
+                show: true
+            xaxis:
+              lines:
+                show: true
           xaxis:
-            lines:
+            axisBorder:
               show: true
-        xaxis:
-          axisBorder:
-            show: true
-            offsetX: -3
-          forceNiceScale: true
-          labels:
-            offsetY: -3
-            hideOverlappingLabels: true
-            trim: false
-            style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
-            datetimeFormatter:
-              hour: H
-              day: d/M
-        yaxis:
-          axisBorder:
-            show: true
-            offsetX: -4
-            height: 0
-          decimalsInFloat: 1
-          forceNiceScale: true
-          labels:
-            hideOverlappingLabels: false
-            trim: false
-            style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
+              offsetX: -3
+            forceNiceScale: true
+            labels:
+              offsetY: -3
+              hideOverlappingLabels: true
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+              datetimeFormatter:
+                hour: H
+                day: d/M
+          yaxis:
+            axisBorder:
+              show: true
+              offsetX: -4
+              height: 0
+            decimalsInFloat: 1
+            forceNiceScale: true
+            labels:
+              hideOverlappingLabels: false
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
   - type: conditional
     conditions:
       - entity: input_boolean.smarther_nome_termostato_info
@@ -222,108 +244,52 @@ cards:
       gridcols: 267px
       gridrows: 30px 27px 25px 27px 25px 27px 25px 27px 59px
       cards:
-        - type: markdown
-          style: |
-            ha-card { 
-              height: 32px !important;
-              width: 265px !important;
-              margin-top: -8px !important;
-              box-shadow: 0px 0px;
-              font-size: 15px;
-              font-weight: bold;
-              border-radius: 20px 0px 0px 0px!important;
-              margin-left: -16px !important;
-            }
-            ha-markdown.no-header {
-              padding-top: 10px !important;
-            }
-          content: SETTINGS
-        - type: markdown
-          style: |
-            ha-card { 
-              height: 25px !important;
-              width: 265px !important;
-              margin-top: -4px;
-              box-shadow: 0px 0px;
-              font-size: 12px;
-              font-style: italic;
-              font-weight: bold;
-              border-radius: 0px !important;
-              margin-left: -16px !important;
-            }
-            ha-markdown.no-header {
-              padding-top: 5px !important;
-            }
-          content: ENABLE/DISABLE WEBOOKS
         - type: 'custom:layout-card'
           layout_type: grid
           layout_options:
             grid-template-columns: 210px 55px
             grid-template-rows: auto
           cards:
-            - color: auto
-              confirmation:
-                text: Sei sicuro di voler attivare/disattivare i Webooks?
+            - type: markdown
+              content: |
+                {% if is_state('input_select.smarther_nome_termostato_language',
+                  'EN') %} 
+                SETTINGS 
+                {% elif is_state('input_select.smarther_nome_termostato_language',
+                  'IT') %}
+                IMPOSTAZIONI
+                {% endif %}
               style: |
-                ha-card {
-                  margin-top: -4px;
-                  height: 25px !important;
+                ha-card { 
+                  height: 32px !important;
                   width: 165px !important;
+                  margin-top: -12px !important;
                   box-shadow: 0px 0px;
-                  #border-style: solid;
-                  border-radius: 0px !important;
+                  font-size: 15px;
+                  font-weight: bold;
+                  border-radius: 20px 0px 0px 0px!important;
                   margin-left: -24px !important;
+                }
+                ha-markdown.no-header {
+                  padding-top: 10px !important;
+                  padding-left: 17px !important;
                   padding-right: 5px !important;
                 }
-                ha-icon {
-                 color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
-                 margin-left: 5px !important;
-                }
-                #name {
-                  #max-width: 50%;
-                  margin-left: -20px !important;
-                  justify-self: left !important;
-                  /* margin: auto; */
-
-                }
-                #container {
-                  display: grid;
-                  #width: 100% !important;
-                  height: 15px !important;
-                  text-align: left !important;
-                  align-items: left !important;
-                  margin-top: 0px !important;
-                  #border-style: solid;
-                }
-              entity: sensor.smarther_webhookdelay_nome_termostato
-              show_state: true
-              show_name: true
-              layout: icon_name_state
-              icon: 'mdi:timer-sand'
-              name: LAST DELAY
-              tap_action:
-                action: call-service
-                service: automation.toggle
-                service_data:
-                  entity_id: automation.smarther_webhook_update
-              size: 30px
-              styles:
-                card:
-                  - font-size: 10px
-              type: 'custom:button-card'
-            - color: green
-              style: |
-                ha-card {
-                  margin-top: -4px;
-                  margin-left: -69px !important;
-                  height: 25px !important;
-                  width: 100px !important;         
+            - style: |
+                ha-card { 
+                  height: 32px !important;
+                  width: 100px !important;
+                  margin-top: -12px;
                   box-shadow: 0px 0px;
-                  border-radius: 0px !important;
+                  font-size: 12px;
+                  font-weight: bold;
+                  border-radius: 0px 0px 0px 0px!important;
+                  margin-left: -69px !important;
+                  padding-top: 10px !important;
                 }
                 ha-icon {
-                 color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
-                 margin-left: -6px !important;
+                 color: green !important;
+                 margin-left: 0px !important;
                 }
                 #name {
                   #max-width: 50%;
@@ -332,22 +298,30 @@ cards:
                   /* margin: auto; */
                 }
               layout: icon_name_state
-              name: GRAPHIC
-              icon: 'mdi:chart-areaspline-variant'
+              entity: input_select.smarther_nome_termostato_language
+              name: BOOST
+              tap_action:
+                action: call-service
+                service: input_select.select_next
+                service_data:
+                  entity_id: input_select.smarther_nome_termostato_language
+              show_state: false
               size: 40px
+              state:
+                - value: EN
+                  icon: 'mdi:translate'
+                  name: ENGLISH
+                - value: IT
+                  icon: 'mdi:translate'
+                  name: ITALIAN
               styles:
                 card:
                   - font-size: 10px
-              tap_action:
-                action: call-service
-                service: input_boolean.turn_on
-                service_data:
-                  entity_id: input_boolean.delay_smarther_nome_termostato
               type: 'custom:button-card'
         - type: markdown
           style: |
             ha-card { 
-              height: 27px !important;
+              height: 25px !important;
               width: 265px !important;
               margin-top: -4px;
               box-shadow: 0px 0px;
@@ -360,56 +334,123 @@ cards:
             ha-markdown.no-header {
               padding-top: 5px !important;
             }
-          content: ENABLE/DISABLE CALL API
-        - color: auto
-          confirmation:
-            text: Sei sicuro di voler attivare/disattivare le chiamate API?
-          style: |
-            ha-card {
-              margin-top: -4px;
-              height: 25px !important;
-              width: 265px !important;
-              box-shadow: 0px 0px;
-              #border-style: solid;
-              border-radius: 0px !important;
-              margin-left: -16px !important;
-            }
-            ha-icon {
-             color: {% if is_state('automation.smarther_nome_termostato_update', 'on') %} green !important {% else %} red !important {% endif %};  
-             margin-left: 5px !important;
-            }
-            #name {
-              max-width: 50%;
-              margin-left: -60px !important;
-              justify-self: left !important;
-              /* margin: auto; */
-
-            }
-            #container {
-              display: grid;
-              width: 100% !important;
-              height: 15px !important;
-              text-align: left !important;
-              align-items: left !important;
-              margin-top: 0px !important;
-              #border-style: solid;
-            }
-          entity: sensor.smarther_update_nome_termostato
-          show_state: true
-          show_name: true
-          layout: icon_name_state
-          icon: 'mdi:clock-check-outline'
-          name: LAST UPDATE
-          tap_action:
-            action: call-service
-            service: automation.toggle
-            service_data:
-              entity_id: automation.smarther_nome_termostato_update
-          size: 30px
-          styles:
-            card:
-              - font-size: 10px
-          type: 'custom:button-card'
+          content: |
+            {% if is_state('input_select.smarther_nome_termostato_language',
+              'EN') %} 
+            ENABLE/DISABLE WEBHOOKS
+            {% elif is_state('input_select.smarther_nome_termostato_language',
+              'IT') %}
+            ABILITA/DISABILITA WEBHOOKS
+            {% endif %}
+        - type: 'custom:layout-card'
+          layout_type: grid
+          layout_options:
+            grid-template-columns: 210px 55px
+            grid-template-rows: auto
+          cards:
+            - type: 'custom:config-template-card'
+              variables:
+                - 'states[''input_select.smarther_nome_termostato_language''].state'
+              entities:
+                - input_select.smarther_nome_termostato_language
+              card:
+                color: auto
+                confirmation:
+                  text: >-
+                    ${vars[0] === 'EN' ? 'Are you sure you want to
+                    enable/disable Webhooks?' : vars[0] === 'IT' ? 'Sei sicuro
+                    di voler attivare/disattivare i Webhooks?' : 'no language'}
+                style: |
+                  ha-card {
+                    margin-top: -4px;
+                    height: 25px !important;
+                    width: 165px !important;
+                    box-shadow: 0px 0px;
+                    #border-style: solid;
+                    border-radius: 0px !important;
+                    margin-left: -24px !important;
+                    padding-right: 5px !important;
+                  }
+                  ha-icon {
+                   color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
+                   margin-left: 5px !important;
+                  }
+                  #name {
+                    #max-width: 50%;
+                    margin-left: -20px !important;
+                    justify-self: left !important;
+                    /* margin: auto; */
+                    margin-right: 250px !important;
+                  }
+                  #container {
+                    display: grid;
+                    #width: 100% !important;
+                    height: 15px !important;
+                    text-align: left !important;
+                    align-items: left !important;
+                    margin-top: 0px !important;
+                    #border-style: solid;
+                  }
+                entity: sensor.smarther_webhookdelay_nome_termostato
+                show_state: true
+                show_name: true
+                layout: icon_name_state
+                icon: 'mdi:timer-sand'
+                name: >-
+                  ${vars[0] === 'EN' ? 'LAST DELAY' : vars[0] === 'IT' ?
+                  'RITARDO'
+                    : 'no language'}
+                tap_action:
+                  action: call-service
+                  service: automation.toggle
+                  service_data:
+                    entity_id: automation.smarther_webhook_update
+                size: 30px
+                styles:
+                  card:
+                    - font-size: 10px
+                type: 'custom:button-card'
+            - type: 'custom:config-template-card'
+              variables:
+                - 'states[''input_select.smarther_nome_termostato_language''].state'
+              entities:
+                - input_select.smarther_nome_termostato_language
+              card:
+                color: green
+                style: |
+                  ha-card {
+                    margin-top: -4px;
+                    margin-left: -69px !important;
+                    height: 25px !important;
+                    width: 100px !important;         
+                    box-shadow: 0px 0px;
+                    border-radius: 0px !important;
+                  }
+                  ha-icon {
+                   color: green  
+                   margin-left: -6px !important;
+                  }
+                  #name {
+                    #max-width: 50%;
+                    margin-left: -5px !important;
+                    justify-self: left !important;
+                    /* margin: auto; */
+                  }
+                layout: icon_name_state
+                name: |-
+                  ${vars[0] === 'EN' ? 'GRAPHIC' : vars[0] === 'IT' ? 'GRAFICO'
+                    : 'no language'}
+                icon: 'mdi:chart-areaspline-variant'
+                size: 40px
+                styles:
+                  card:
+                    - font-size: 10px
+                tap_action:
+                  action: call-service
+                  service: input_boolean.turn_on
+                  service_data:
+                    entity_id: input_boolean.delay_smarther_nome_termostato
+                type: 'custom:button-card'
         - type: markdown
           style: |
             ha-card { 
@@ -426,55 +467,160 @@ cards:
             ha-markdown.no-header {
               padding-top: 5px !important;
             }
-          content: UPDATE THERMOSTAT PROGRAM
-        - color: auto
-          confirmation:
-            text: Sei sicuro di voler aggiornare i programmi?
+          content: |
+            {% if is_state('input_select.smarther_nome_termostato_language',
+              'EN') %} 
+            ENABLE/DISABLE CALL API
+            {% elif is_state('input_select.smarther_nome_termostato_language',
+              'IT') %}
+            ABILITA/DISABILITA CHIAMATE API
+            {% endif %}
+        - type: 'custom:config-template-card'
+          variables:
+            - 'states[''input_select.smarther_nome_termostato_language''].state'
+          entities:
+            - input_select.smarther_nome_termostato_language
+          card:
+            color: auto
+            confirmation:
+              text: >-
+                ${vars[0] === 'EN' ? 'Are you sure you want to enable/disable
+                API calls?' : vars[0] === 'IT' ? 'Sei sicuro di voler
+                attivare/disattivare le chiamate API?' : 'no language'}
+            style: |
+              ha-card {
+                margin-top: -4px;
+                height: 25px !important;
+                width: 265px !important;
+                box-shadow: 0px 0px;
+                #border-style: solid;
+                border-radius: 0px !important;
+                margin-left: -16px !important;
+
+              }
+              ha-icon {
+               color: {% if is_state('automation.smarther_nome_termostato_update', 'on') %} green !important {% else %} red !important {% endif %};  
+               margin-left: 5px !important;
+              }
+              #name {
+                max-width: 50%;
+                margin-left: -60px !important;
+                justify-self: left !important;
+                /* margin: auto; */
+                #padding-right: -50px !important;
+                margin-right: 250px !important;
+              }
+              #container {
+                display: grid;
+                width: 100% !important;
+                height: 15px !important;
+                text-align: left !important;
+                align-items: left !important;
+                margin-top: 0px !important;
+                #border-style: solid;
+              }
+            entity: sensor.smarther_update_nome_termostato
+            show_state: true
+            show_name: true
+            layout: icon_name_state
+            icon: 'mdi:clock-check-outline'
+            name: >-
+              ${vars[0] === 'EN' ? 'LAST UPDATE' : vars[0] === 'IT' ? 'ULTIMO
+              AGGIORNAMENTO'
+                : 'no language'}
+            tap_action:
+              action: call-service
+              service: automation.toggle
+              service_data:
+                entity_id: automation.smarther_nome_termostato_update
+            size: 30px
+            styles:
+              card:
+                - font-size: 10px
+            type: 'custom:button-card'
+        - type: markdown
           style: |
-            ha-card {
-              margin-top: -4px;
-              height: 25px !important;
+            ha-card { 
+              height: 27px !important;
               width: 265px !important;
+              margin-top: -4px;
               box-shadow: 0px 0px;
-              #border-style: solid;
+              font-size: 12px;
+              font-style: italic;
+              font-weight: bold;
               border-radius: 0px !important;
               margin-left: -16px !important;
             }
-            ha-icon {
-             color: rgb(102, 153, 255) !important;  
-             margin-left: 5px !important;
+            ha-markdown.no-header {
+              padding-top: 5px !important;
             }
-            #name {
-              max-width: 50%;
-              margin-left: -60px !important;
-              justify-self: left !important;
-              /* margin: auto; */
-            }
-            #container {
-              display: grid;
-              width: 100% !important;
-              height: 15px !important;
-              text-align: left !important;
-              align-items: left !important;
-              margin-top: 0px !important;
-              #border-style: solid;
-            }
-          entity: sensor.smarther_lista_programmi_nome_termostato
-          show_state: false
-          show_name: true
-          layout: icon_name_state
-          icon: 'mdi:update'
-          name: CLICK TO UPDATE
-          tap_action:
-            action: call-service
-            service: script.turn_on
-            service_data:
-              entity_id: script.smarther_nome_termostato_carica_programmi
-          size: 30px
-          styles:
-            card:
-              - font-size: 10px
-          type: 'custom:button-card'
+          content: |
+            {% if is_state('input_select.smarther_nome_termostato_language',
+              'EN') %} 
+            UPDATE PROGRAM LIST
+            {% elif is_state('input_select.smarther_nome_termostato_language',
+              'IT') %}
+            AGGIORNA L'ELENCO DEI PROGRAMMI
+            {% endif %}
+        - type: 'custom:config-template-card'
+          variables:
+            - 'states[''input_select.smarther_nome_termostato_language''].state'
+          entities:
+            - input_select.smarther_nome_termostato_language
+          card:
+            confirmation:
+              text: >-
+                ${vars[0] === 'EN' ? 'Are you sure you want to update the
+                program list?' : vars[0] === 'IT' ? 'Sei sicuro di voler
+                aggiornare l\'elenco dei programmi?' : 'no language'}
+            style: |
+              ha-card {
+                margin-top: -4px;
+                height: 25px !important;
+                width: 265px !important;
+                box-shadow: 0px 0px;
+                #border-style: solid;
+                border-radius: 0px !important;
+                margin-left: -16px !important;
+              }
+              ha-icon {
+               color: rgb(102, 153, 255) !important;  
+               margin-left: 5px !important;
+              }
+              #name {
+                max-width: 50%;
+                margin-left: -60px !important;
+                justify-self: left !important;
+                /* margin: auto; */
+              }
+              #container {
+                display: grid;
+                width: 100% !important;
+                height: 15px !important;
+                text-align: left !important;
+                align-items: left !important;
+                margin-top: 0px !important;
+                #border-style: solid;
+              }
+            entity: sensor.smarther_lista_programmi_nome_termostato
+            show_state: false
+            show_name: true
+            layout: icon_name_state
+            icon: 'mdi:update'
+            name: >-
+              ${vars[0] === 'EN' ? 'CLICK TO UPDATE' : vars[0] === 'IT' ?
+              'CLICCA PER AGGIORNARE'
+                : 'no language'}
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.smarther_nome_termostato_carica_programmi
+            size: 30px
+            styles:
+              card:
+                - font-size: 10px
+            type: 'custom:button-card'
         - type: 'custom:layout-card'
           layout_type: grid
           layout_options:
@@ -482,7 +628,14 @@ cards:
             grid-template-rows: auto
           cards:
             - type: markdown
-              content: THERMOSTAT STATUS
+              content: |
+                {% if is_state('input_select.smarther_nome_termostato_language',
+                  'EN') %} 
+                THERMOSTAT STATUS
+                {% elif is_state('input_select.smarther_nome_termostato_language',
+                  'IT') %}
+                STATO TERMOSTATO
+                {% endif %}
               style: |
                 ha-card { 
                   height: 25px !important;
@@ -498,11 +651,9 @@ cards:
                 ha-markdown.no-header {
                   padding-top: 5px !important;
                   padding-left: 17px !important;
-                  padding-right: 5px !important;
+                  #padding-right: 5px !important;
                 }
-            - type: markdown
-              content: 'On for: {{ states(''sensor.smarther_nome_termostato_on_today'') }} h '
-              style: |
+            - style: |
                 ha-card { 
                   height: 25px !important;
                   width: 100px !important;
@@ -514,97 +665,129 @@ cards:
                   border-radius: 0px 0px 0px 0px!important;
                   margin-left: -69px !important;
                 }
-                ha-markdown.no-header {
-                  padding-top: 5px !important;
-                  padding-left: 5px !important;
+                ha-icon {
+                 color: green !important;
+                 margin-left: 0px !important;
                 }
-        - type: 'custom:apexcharts-card'
-          style: |
-            ha-card { 
-              height: 69px !important;
-              width: 260px !important;
-              margin-top: -4px;
-              padding-left: 5px;
-              box-shadow: 0px 0px;
-              font-size: 12px;
-              font-style: italic;
-              font-weight: bold;
-              border-radius: 0px 0px 0px 20px!important;
-              margin-left: -16px !important;
-            }
-            .apexcharts-canvas {
-              position: absolute !important;
-              height: 50px !important;
-              user-select: none;
-              margin-top: -25px !important;
-              
-            }
-            .apexcharts-tooltip {
-              display: none !important;
-              
-            }
-            .apexcharts-xaxistooltip {
-              padding: 2px 2px !important;
-              transform: scale(0.7) translate(-30px)!important;
-            }
-          graph_span: 24h
-          header:
-            show: false
+                #name {
+                  #max-width: 50%;
+                  margin-left: -5px !important;
+                  justify-self: left !important;
+                  /* margin: auto; */
+                }
+              layout: icon_name_state
+              name: >
+                [[[ return "ON x " +
+                states['sensor.smarther_nome_termostato_on_today_in_minutes'].state + "
+                Min" ]]]
+              icon: 'mdi:chart-bar'
+              size: 40px
+              styles:
+                card:
+                  - font-size: 10px
+              tap_action:
+                action: call-service
+                service: input_boolean.turn_on
+                service_data:
+                  entity_id: input_boolean.on_time_smarther_nome_termostato
+              type: 'custom:button-card'
+        - type: 'custom:config-template-card'
+          variables:
+            - 'states[''input_select.smarther_nome_termostato_language''].state'
           entities:
-            - entity: sensor.smarther_stato_nome_termostato
-              transform: 'return x === ''ACTIVE'' ? 1 : 0;'
-              curve: stepline
-              type: area
-              color: red
-              name: active
-            - entity: sensor.smarther_stato_nome_termostato
-              transform: 'return x === ''INACTIVE'' ? 1 : 0;'
-              curve: stepline
-              type: area
-              color: var(--disabled-text-color)
-              name: inactive
-          apex_config:
-            legend:
-              show: true
-              show_name: false
-              offsetY: 2
-              fontSize: 10px
-            chart:
-              height: 94px
-              width: 265px
-            tooltip:
-              enabled: false
-            grid:
-              show: true
-              yaxis:
-                lines:
-                  show: false
-              xaxis:
-                lines:
-                  show: true
-            xaxis:
-              forceNiceScale: false
-              labels:
-                hideOverlappingLabels: false
-                trim: false
-                rotate: -60
-                rotateAlways: true
-                style:
-                  fontSize: 9
-                axisTicks:
-                  tickAmount: dataPoints
-                offsetY: -9
-                datetimeFormatter:
-                  hour: H
-                  day: d/M
-            yaxis:
+            - input_select.smarther_nome_termostato_language
+          card:
+            type: 'custom:apexcharts-card'
+            style: |
+              ha-card { 
+                height: 69px !important;
+                width: 260px !important;
+                margin-top: -4px;
+                padding-left: 5px;
+                box-shadow: 0px 0px;
+                font-size: 12px;
+                font-style: italic;
+                font-weight: bold;
+                border-radius: 0px 0px 0px 20px!important;
+                margin-left: -16px !important;
+              }
+              .apexcharts-canvas {
+                position: absolute !important;
+                height: 50px !important;
+                user-select: none;
+                margin-top: -25px !important;
+                
+              }
+              .apexcharts-tooltip {
+                display: none !important;
+                
+              }
+              .apexcharts-xaxistooltip {
+                padding: 2px 2px !important;
+                transform: scale(0.7) translate(-30px)!important;
+              }
+            graph_span: 24h
+            header:
               show: false
-              min: 0
-              max: 1
-              forceNiceScale: true
-              decimalsInFloat: 1
-            stroke:
-              width: 1
+            entities:
+              - entity: sensor.smarther_stato_nome_termostato
+                transform: 'return x === ''ACTIVE'' ? 1 : 0;'
+                curve: stepline
+                type: area
+                color: red
+                name: >-
+                  ${vars[0] === 'EN' ? 'Switched On' : vars[0] === 'IT' ?
+                  'Acceso' : 'no language'}
+              - entity: sensor.smarther_stato_nome_termostato
+                transform: 'return x === ''INACTIVE'' ? 1 : 0;'
+                curve: stepline
+                type: area
+                color: var(--disabled-text-color)
+                name: >-
+                  ${vars[0] === 'EN' ? 'Switched Off' : vars[0] === 'IT' ?
+                  'Spento' : 'no language'}
+            apex_config:
+              legend:
+                show: true
+                show_name: false
+                offsetY: 2
+                fontSize: 10px
+              chart:
+                height: 94px
+                width: 265px
+              tooltip:
+                enabled: false
+              grid:
+                show: true
+                yaxis:
+                  lines:
+                    show: false
+                xaxis:
+                  lines:
+                    show: true
+              xaxis:
+                forceNiceScale: false
+                labels:
+                  hideOverlappingLabels: false
+                  trim: false
+                  rotate: -60
+                  rotateAlways: true
+                  style:
+                    fontSize: 9
+                  axisTicks:
+                    tickAmount: dataPoints
+                  offsetY: -9
+                  datetimeFormatter:
+                    hour: H
+                    day: d/M
+              yaxis:
+                show: false
+                min: 0
+                max: 1
+                forceNiceScale: true
+                decimalsInFloat: 1
+              stroke:
+                width: 1
       layout_type: grid
       layout_options:
         grid-template-columns: 263px
@@ -614,87 +797,196 @@ cards:
       - entity: input_boolean.delay_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:apexcharts-card'
-      style: |
-        ha-card { 
-          box-shadow: 0px 0px;
-          border-radius: 20px 0px 0px 20px!important;
-          margin-top: -4px !important;
-          margin-left: -8px !important;
-          width: 265px !important;
-          height: 280px !important;
-        }
-      graph_span: 24h
-      header:
-        show: true
-        show_states: true
-        colorize_states: false
-        title: Delay
+      type: 'custom:config-template-card'
+      variables:
+        - 'states[''input_select.smarther_nome_termostato_language''].state'
       entities:
-        - entity: sensor.smarther_webhookdelay_nome_termostato
-          type: area
-          color: green
-          name: Termostato nome_termostato
-          show:
-            extremas: true
-      apex_config:
-        chart:
-          height: 190px
-          width: 265px
-        tooltip:
-          enabled: false
-        stroke:
-          width: 2
-          curve: stepline
-        fill:
-          type: gradient
-          gradient:
-            type: vertical
-            shadeIntensity: 0
-            opacityFrom: 1
-            opacityTo: 0
-            stops:
-              - 0
-              - 98
-              - 100
-        grid:
+        - input_select.smarther_nome_termostato_language
+      card:
+        type: 'custom:apexcharts-card'
+        style: |
+          ha-card { 
+            box-shadow: 0px 0px;
+            border-radius: 20px 0px 0px 20px!important;
+            margin-top: -4px !important;
+            margin-left: -8px !important;
+            width: 265px !important;
+            height: 280px !important;
+          }
+        graph_span: 24h
+        header:
           show: true
-          yaxis:
-            lines:
-              show: true
+          show_states: true
+          colorize_states: false
+          title: |-
+            ${vars[0] === 'EN' ? 'DELAY' : vars[0] === 'IT' ? 'RITARDO'
+            : 'no language'}
+        entities:
+          - entity: sensor.smarther_webhookdelay_nome_termostato
+            type: area
+            color: green
+            name: >-
+              ${vars[0] === 'EN' ? 'Thermostat nome_termostato' : vars[0] === 'IT' ?
+              'Termostato nome_termostato' : 'no language'}
+            show:
+              extremas: true
+        apex_config:
+          chart:
+            height: 190px
+            width: 265px
+          tooltip:
+            enabled: false
+          stroke:
+            width: 2
+            curve: stepline
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0
+              opacityFrom: 1
+              opacityTo: 0
+              stops:
+                - 0
+                - 98
+                - 100
+          grid:
+            show: true
+            yaxis:
+              lines:
+                show: true
+            xaxis:
+              lines:
+                show: true
           xaxis:
-            lines:
+            axisBorder:
               show: true
-        xaxis:
-          axisBorder:
-            show: true
-            offsetX: -3
-          forceNiceScale: true
-          labels:
-            offsetY: -3
-            hideOverlappingLabels: true
-            trim: false
+              offsetX: -3
+            forceNiceScale: true
+            labels:
+              offsetY: -3
+              hideOverlappingLabels: true
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+              datetimeFormatter:
+                hour: H
+                day: d/M
+          yaxis:
+            axisBorder:
+              show: true
+              offsetX: -4
+              height: 0
+            decimalsInFloat: 1
+            forceNiceScale: true
+            labels:
+              hideOverlappingLabels: false
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+  - type: conditional
+    conditions:
+      - entity: input_boolean.on_time_smarther_nome_termostato
+        state: 'on'
+    card:
+      type: 'custom:config-template-card'
+      variables:
+        - 'states[''input_select.smarther_nome_termostato_language''].state'
+      entities:
+        - input_select.smarther_nome_termostato_language
+      card:
+        type: 'custom:apexcharts-card'
+        style: |
+          ha-card { 
+            box-shadow: 0px 0px;
+            border-radius: 20px 0px 0px 20px!important;
+            margin-top: -4px !important;
+            margin-left: -8px !important;
+            width: 265px !important;
+            height: 280px !important;
+          }
+        graph_span: 7day
+        header:
+          show: true
+          show_states: true
+          colorize_states: false
+          title: >-
+            ${vars[0] === 'EN' ? 'THERMOSTAT STATUS' : vars[0] === 'IT' ? 'STATO
+            TERMOSTATO' : 'no language'}
+        series:
+          - color: green
+            entity: sensor.smarther_nome_termostato_on_today_in_minutes
+            name: >-
+              ${vars[0] === 'EN' ? 'Thermostat on today in minutes' : vars[0]
+              === 'IT' ? 'Termostato acceso oggi in minuti' : 'no language'}
+            type: column
+            group_by:
+              func: max
+              duration: 24h
+            show:
+              datalabels: true
+        apex_config:
+          chart:
+            type: area
+            height: 190px
+            width: 265px
+          dataLabels:
+            enabled: true
             style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
-            datetimeFormatter:
-              hour: H
-              day: d/M
-        yaxis:
-          axisBorder:
+              fontSize: 10
+            offsetY: -10
+          tooltip:
+            enabled: false
+          stroke:
             show: true
-            offsetX: -4
-            height: 0
-          decimalsInFloat: 1
-          forceNiceScale: true
-          labels:
-            hideOverlappingLabels: false
-            trim: false
-            style:
-              fontSize: 11
-            axisTicks:
-              tickAmount: dataPoints
+            width: 1
+            curve: smooth
+          fill:
+            type: gradient
+            gradient:
+              shadeIntensity: 0.1
+              opacityFrom: 0.25
+              opacityTo: 1
+              inverseColors: true
+              stops:
+                - 0
+                - 90
+                - 100
+          xaxis:
+            axisBorder:
+              show: true
+              offsetX: -3
+            forceNiceScale: true
+            labels:
+              offsetY: -3
+              hideOverlappingLabels: true
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+              datetimeFormatter:
+                day: d/M
+          yaxis:
+            axisBorder:
+              show: false
+              offsetX: -4
+              height: 0
+            decimalsInFloat: 1
+            forceNiceScale: true
+            labels:
+              hideOverlappingLabels: false
+              trim: false
+              style:
+                fontSize: 11
+              axisTicks:
+                tickAmount: dataPoints
+              datetimeFormatter:
+                hour: h
   - type: conditional
     conditions:
       - entity: sensor.smarther_boost_type_nome_termostato
@@ -938,7 +1230,14 @@ cards:
               - value: 0.1
                 color: var(--disabled-text-color)
                 icon: 'mdi:play-speed'
-                name: SET BOOST
+                name: |
+                  [[[
+                    if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
+                      return 'SET BOOST';
+                    } if (states['input_select.smarther_nome_termostato_language'].state == 'IT') { 
+                        return 'IMPOSTA BOOST';
+                      }
+                  ]]]
               - value: 30
                 color: 'rgb(255, 153, 153)'
                 icon: 'mdi:play-speed'
@@ -990,7 +1289,14 @@ cards:
             height: 50px !important;
             box-shadow: 0px 0px;
           }
-        name: TEMPERAT.
+        name: |
+          [[[
+            if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
+              return 'TEMPERATURE';
+            } if (states['input_select.smarther_nome_termostato_language'].state == 'IT') { 
+                return 'TEMPERATURA';
+              }
+          ]]]
         icon: 'mdi:home-thermometer'
         size: 40px
         styles:
@@ -1009,7 +1315,14 @@ cards:
             height: 50px !important;
             box-shadow: 0px 0px;
           }
-        name: UMIDITA'
+        name: |
+          [[[
+            if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
+              return 'HUMIDITY';
+            } if (states['input_select.smarther_nome_termostato_language'].state == 'IT') { 
+                return 'UMIDITA\'';
+              }
+          ]]]
         icon: 'mdi:water-percent'
         size: 40px
         styles:
@@ -1048,34 +1361,82 @@ cards:
           icon:
             - color: var(--disabled-text-color)
         type: 'custom:button-card'
-      - color: auto
-        style: |
-          ha-card {
-            margin: 0px 0px 0px 0px;
-            height: 50px !important;
-            box-shadow: 0px 0px;
-          }
-        entity: input_boolean.smarther_nome_termostato_info
-        state:
-          - color: green
-            value: 'off'
-            icon: 'mdi:information-outline'
-            name: INFO / SETTINGS
-          - color: green
-            value: 'on'
-            icon: 'mdi:thermostat'
-            name: CLIMATE
-        name: INFO
-        tap_action:
-          action: call-service
-          service: input_boolean.toggle
-          service_data:
-            entity_id: input_boolean.smarther_nome_termostato_info
-        size: 40px
-        styles:
-          card:
-            - font-size: 10px
-        type: 'custom:button-card'
+      - type: 'custom:layout-card'
+        layout_type: grid
+        layout_options:
+          grid-template-columns: 90px 30px
+          grid-template-rows: auto
+        cards:
+          - color: auto
+            style: |
+              ha-card {
+                margin-top: 0px;
+                height: 50px !important;
+                box-shadow: 0px 0px;
+                border-radius: 0px !important;
+                background-color: rgba(0, 0, 0, 0.0)
+              }
+            entity: input_boolean.smarther_nome_termostato_info
+            state:
+              - color: green
+                value: 'off'
+                icon: 'mdi:information-outline'
+                name: |
+                  [[[
+                    if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
+                      return 'INFO/SETTINGS';
+                    } if (states['input_select.smarther_nome_termostato_language'].state == 'IT') { 
+                      return 'INFO/IMPOSTAZIONI';
+                    }
+                  ]]]
+              - color: green
+                value: 'on'
+                icon: 'mdi:thermostat'
+                name: |
+                  [[[
+                    if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
+                      return 'CLIMATE';
+                    } if (states['input_select.smarther_nome_termostato_language'].state == 'IT') { 
+                      return 'TERMOSTATO';
+                    }
+                  ]]]
+            name: INFO
+            tap_action:
+              action: call-service
+              service: input_boolean.toggle
+              service_data:
+                entity_id: input_boolean.smarther_nome_termostato_info
+            size: 40px
+            styles:
+              card:
+                - font-size: 10px
+            type: 'custom:button-card'
+          - color: auto
+            style: |
+              ha-card {
+                margin-left: -25px;
+                margin-top: 0px;
+                height: 20px !important;
+                width: 15px !important;
+                box-shadow: 0px 0px;
+                background-color: rgba(0, 0, 0, 0.0)
+              }
+            entity: sensor.smarther_webhookdelay_nome_termostato
+            state:
+              - color: '#ff0000'
+                operator: '>='
+                value: 5
+                icon: 'mdi:alert'
+              - color: green
+                operator: <=
+                value: 4
+                icon: 'mdi:check-bold'
+            show_name: false
+            size: 40px
+            styles:
+              card:
+                - font-size: 10px
+            type: 'custom:button-card'
 layout_type: grid
 layout_options:
   grid-template-columns: 255px 20px 100px
