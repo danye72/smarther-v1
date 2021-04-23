@@ -76,6 +76,9 @@ input_boolean:
   delay_smarther_nome_termostato:
     initial: 'off'
 
+  on_time_smarther_nome_termostato:
+    initial: 'off'
+
   #### INPUT SELECT #### 
 
 input_select:
@@ -93,6 +96,11 @@ input_select:
       - "no_prog."
     name: programma nome_termostato
     icon: mdi:calendar-clock
+
+  smarther_nome_termostato_language:
+    options:
+      - EN
+      - IT
 
 
   #### INPUT NUMBER #### 
@@ -208,7 +216,7 @@ sensor:
     type: time
     start: '{{ now().replace(hour=0, minute=0, second=0) }}'
     end: '{{ now() }}'
-
+  
 
   #### SENSOR TEMPLATE ####
 
@@ -216,7 +224,8 @@ sensor:
     sensors:
       smarther_nome_termostato_on_today_in_minutes:
         friendly_name: "Thermostat nome_termostato ON today in minutes"
-        value_template: "{{ state_attr('sensor.smarther_nome_termostato_on_today', 'value')}}"
+        value_template: "{{ state_attr('sensor.smarther_nome_termostato_on_today', 'value') |replace('m', '')}}"
+        unit_of_measurement: "Min"
 
   - platform: template
     sensors:
@@ -379,6 +388,9 @@ automation:
       entity_id: input_boolean.delay_smarther_nome_termostato
     - service: input_boolean.turn_off
       data: {}
+      entity_id: input_boolean.on_time_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
       entity_id: input_boolean.umidita_smarther_nome_termostato
     - delay: 00:00:05
     - service: input_boolean.turn_off
@@ -411,6 +423,9 @@ automation:
       entity_id: input_boolean.delay_smarther_nome_termostato
     - service: input_boolean.turn_off
       data: {}
+      entity_id: input_boolean.on_time_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
       entity_id: input_boolean.temperatura_smarther_nome_termostato
     - delay: 00:00:05
     - service: input_boolean.turn_off
@@ -434,6 +449,40 @@ automation:
     - service: input_boolean.turn_off
       data: {}
       entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.umidita_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.on_time_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.temperatura_smarther_nome_termostato
+    - delay: 00:00:05
+    - service: input_boolean.turn_on
+      data: {}
+      entity_id: input_boolean.smarther_nome_termostato_info
+    mode: 'restart'
+
+  - id: on_time_smarther_nome_termostato
+    alias: on_time_smarther_nome_termostato
+    description: ''
+    trigger:
+    - platform: state
+      entity_id: input_boolean.on_time_smarther_nome_termostato
+      from: 'off'
+      to: 'on'
+    condition: []
+    action:
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.climate_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.delay_smarther_nome_termostato
     - service: input_boolean.turn_off
       data: {}
       entity_id: input_boolean.umidita_smarther_nome_termostato
@@ -471,6 +520,9 @@ automation:
     - service: input_boolean.turn_off
       data: {}
       entity_id: input_boolean.delay_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.on_time_smarther_nome_termostato
     mode: 'restart'
 
   - id: climate_smarther_nome_termostato
@@ -490,6 +542,9 @@ automation:
       state: 'off'
     - condition: state
       entity_id: input_boolean.delay_smarther_nome_termostato
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.on_time_smarther_nome_termostato
       state: 'off'
     action:
     - service: input_boolean.turn_on
@@ -519,6 +574,9 @@ automation:
     - service: input_boolean.turn_off
       data: {}
       entity_id: input_boolean.delay_smarther_nome_termostato
+    - service: input_boolean.turn_off
+      data: {}
+      entity_id: input_boolean.on_time_smarther_nome_termostato
     mode: 'restart'
 
 #### CLIMATE
