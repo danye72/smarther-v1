@@ -1,7 +1,7 @@
 # BTicino Smarther integration for Home Assistant
 
 Hi! This project is developed and maintenance by a small community of passionate people who make this solution available for free. 
-Special thanks to `tizio, caio, stempronio,` that are part of this community.
+Special thanks to `@danye72, @Veuchez, @malesci` that are part of this community.
 
 This project want to help Home Assistant users to integrate easily **BTicino Smarther X8000**
 
@@ -136,6 +136,7 @@ Install the following Frontends with **HACS**:
  - button-card
  - apexcharts-card
  - card-mod
+ - config-template-card
 
 ### 4.2. Get Lovelace Card for your thermostat
 Copy the manual card code from the generated file placed in `/config/smarther/TERMOSTATO_CARD_thermostat_name.txt`
