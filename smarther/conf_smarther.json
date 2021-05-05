@@ -1,8 +1,8 @@
 {
-  "client_id": "xxx",
-  "client_secret": "xxx",
-  "primary_key": "xxx",
-  "code": "xxx",
-  "c2c_url": "xxx",
+  "client_id": "__client_id__",
+  "client_secret": "__client_secret__",
+  "primary_key": "__primary_key__",
+  "code": "__code__",
+  "c2c_url": "__c2c_url__",
   "c2c": "ok"
 }

@@ -1,0 +1,60 @@
+#!/bin/sh
+
+smarther_path_dir=/config/smarther
+gh_repo_url="https://github.com/danye72/smarther-v1"
+
+log=$smarther_path_dir/update.log
+
+path_dir=/$(echo "$gh_repo_url" | sed -r 's|.*/(.*)$|\1|')
+if [ ! -d "$path_dir" ]; then
+    echo "$(date) | INFO  | --- Cloning from GitHub ------" >> $log
+    cd /
+    git clone $gh_repo_url >> $log 2>&1
+    ret=$?
+    if (test "$ret" -eq 0); then
+       echo "$(date) | INFO  | Repository successfully cloned." >> $log
+    else
+       echo "$(date) | ERROR | Repository cloning failed." >> $log
+       exit 1
+    fi
+else
+    echo "$(date) | INFO  | --- Pulling from GitHub ------" >> $log
+    cd $path_dir
+    git pull $gh_repo_url >> $log 2>&1
+    ret=$?
+    if (test "$ret" -eq 0); then
+       echo "$(date) | INFO  | Repository successfully pulled." >> $log
+    else
+       echo "$(date) | ERROR | Repository pulling failed." >> $log
+       exit 1
+    fi
+fi
+
+cd $path_dir
+error=false
+
+if [ ! -f ./script/get_secret ]; then
+    echo "$(date) | ERROR | File ./script/get_secret is missing. Check repo URL." >> $log
+    error=true
+fi
+
+if [ ! -f ./script/update ]; then
+    echo "$(date) | ERROR | File ./script/update is missing. Check repo URL." >> $log
+    error=true
+fi
+
+if [ ! -f ./script/install ]; then
+    echo "$(date) | ERROR | File ./script/install is missing. Check repo URL." >> $log
+    error=true
+fi
+
+if [ $error = false ]; then
+    echo "$(date) | INFO  | Launch install script." >> $log
+    chmod +x ./script/get_secret
+    chmod +x ./script/update
+    chmod +x ./script/install
+    sh -x ./script/install >> $log
+else
+    echo "$(date) | ERROR | Something went wrong :( Checks the log file." >> $log
+    exit 1
+fi

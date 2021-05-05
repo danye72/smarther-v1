@@ -1,0 +1,8 @@
+shell_command:
+  smarther_update: "sh /config/smarther/update"
+
+script:
+  update_from_smarther_github_repo:
+    alias: Update smarther integration from GitHub repository
+    sequence:
+    - service: shell_command.smarther_update

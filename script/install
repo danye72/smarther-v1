@@ -1,0 +1,132 @@
+#!/bin/sh
+
+path_dir=/config/smarther
+package_dir=/config/packages/smarther
+
+log=$path_dir/update.log
+error=false
+
+echo "$(date) | INFO  | ------------------------------" >> $log
+echo "$(date) | INFO  | --- INSTALLATION STARTING ----" >> $log
+
+if [ ! -d "$path_dir" ]; then
+   mkdir -p "$path_dir"
+   echo "$(date) | WARN  | $path_dir not exist. Folder created" >> $log
+fi
+if [ ! -d "$package_dir" ]; then
+    mkdir -p "$package_dir"
+    echo "$(date) | WARN  | Folder $package_dir not exist. Created." >> $log
+fi
+
+if [ ! -d ./smarther ]; then
+   echo "$(date) | ERROR | Folder ./smarther is missing. Check repo URL." >> $log
+   error=true
+fi
+
+if [ ! -f ./smarther/conf_smarther.json ]; then
+   echo "$(date) | ERROR | File ./smarther/conf_smarther.json is missing. Check repo URL." >> $log
+   error=true
+fi
+
+if [ ! -f ./packages/smarther/smarther_update.yaml ]; then
+   echo "$(date) | ERROR | File ./packages/smarther/smarther_update.yaml is missing. Check repo URL." >> $log
+   error=true
+fi
+
+if [ ! -f ./packages/smarther/smarther_nome_termostato.yaml ]; then
+   echo "$(date) | ERROR | File ./packages/smarther/smarther_nome_termostato.yaml is missing. Check repo URL." >> $log
+   error=true
+fi
+
+if [ ! -f ./packages/smarther/smarther_webhooks.yaml ]; then
+   echo "$(date) | ERROR | File ./packages/smarther/smarther_webhooks.yaml is missing. Check repo URL." >> $log
+   error=true
+fi
+
+if [ ! -f ./TERMOSTATO_CARD.txt ]; then
+   echo "$(date) | ERROR | File ./TERMOSTATO_CARD.txt is missing. Check repo URL." >> $log
+   error=true
+fi
+   
+client_id=$(./script/get_secret bticino_thermostat_client_id)
+client_secret=$(./script/get_secret bticino_thermostat_client_secret)
+subscription_key=$(./script/get_secret bticino_thermostat_subscription_key)
+code=$(./script/get_secret bticino_thermostat_code)
+domain=$(./script/get_secret domain)
+
+if [ -z "$client_id" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_client_id>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+if [ -z "$client_secret" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_client_secret>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+if [ -z "$subscription_key" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_subscription_key>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+if [ -z "$code" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_code>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+if [ -z "$domain" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<domain>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+
+#echo "Loop through a comma-separated shell variable // to support multiple thermostat" >> $log
+#variable=$(./get_secret bticino_thermostat_name)
+#for i in $(echo $variable | sed "s/,/ /g")
+#do
+#    # call your procedure/other scripts here below
+#    echo "$i"
+#done
+
+thermostat_name=$(./script/get_secret bticino_thermostat_name)
+if [ -z "$thermostat_name" ]; then
+   echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_name>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
+   error=true
+fi
+
+if [ $error = false ]; then
+   echo "$(date) | INFO  | Copy files to $path_dir" >> $log
+   #cp -r ./smarther $path_dir
+   cp ./smarther/smarther.py $path_dir/smarther.py
+   cp ./packages/smarther/smarther_update.yaml $package_dir/smarther_update.yaml
+   cp ./script/update $path_dir/update
+   
+   echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
+   cat ./smarther/conf_smarther.json \
+   | sed 's/__client_id__/'"$(./script/get_secret bticino_thermostat_client_id)"'/g' \
+   | sed 's/__client_secret__/'"$(./script/get_secret bticino_thermostat_client_secret)"'/g' \
+   | sed 's/__primary_key__/'"$(./script/get_secret bticino_thermostat_subscription_key)"'/g' \
+   | sed 's/__code__/'"$(./script/get_secret bticino_thermostat_code)"'/g' \
+   | sed 's/__c2c_url__/https:\/\/'"$(./script/get_secret domain)"'\/api\/webhook\/smarther475600/g' \
+   > $path_dir/conf_smarther.json
+   echo "$(date) | INFO  | Saved $path_dir/conf_smarther.json" >> $log
+
+   echo "$(date) | INFO  | Copy smarther_nome_termostato.yaml in $package_dir/smarther_$thermostat_name.yaml" >> $log
+   cat ./packages/smarther/smarther_nome_termostato.yaml \
+   | sed 's/nome_termostato/'"$(./script/get_secret bticino_thermostat_name)"'/g' \
+   > $package_dir/smarther_$thermostat_name.yaml
+   echo "$(date) | INFO  | Saved $package_dir/smarther_$thermostat_name.yaml" >> $log
+
+   echo "$(date) | INFO  | Copy smarther_webhooks.yaml" >> $log
+   cat ./packages/smarther/smarther_webhooks.yaml \
+   | sed 's/nome_termostato/'"$(./script/get_secret bticino_thermostat_name)"'/g' \
+   > $package_dir/smarther_webhooks.yaml
+   echo "$(date) | INFO  | Saved $package_dir/smarther_webhooks.yaml" >> $log
+
+   echo "$(date) | INFO  | Copy TERMOSTATO_CARD.txt" >> $log
+   cat ./TERMOSTATO_CARD.txt \
+   | sed 's/nome_termostato/'"$(./script/get_secret bticino_thermostat_name)"'/g' \
+   > $path_dir/TERMOSTATO_CARD_$thermostat_name.txt
+   echo "$(date) | INFO  | Saved $path_dir/TERMOSTATO_CARD_$thermostat_name.txt" >> $log
+   
+   echo "$(date) | INFO  | --- INSTALLATION COMPLETED ---" >> $log
+   echo "$(date) | INFO  | ------------------------------" >> $log
+else
+   echo "$(date) | ERROR | Something went wrong :( Checks the log file." >> $log
+   exit 1
+fi
