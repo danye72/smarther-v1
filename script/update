@@ -5,6 +5,11 @@ gh_repo_url="https://github.com/danye72/smarther-v1"
 
 log=$smarther_path_dir/update.log
 
+if [ ! -d "$smarther_path_dir" ]; then
+   mkdir -p "$smarther_path_dir"
+   echo "$(date) | WARN  | $smarther_path_dir not exist. Folder created" >> $log
+fi
+
 path_dir=/$(echo "$gh_repo_url" | sed -r 's|.*/(.*)$|\1|')
 if [ ! -d "$path_dir" ]; then
     echo "$(date) | INFO  | --- Cloning from GitHub ------" >> $log
