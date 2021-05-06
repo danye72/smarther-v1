@@ -1,7 +1,7 @@
 #!/bin/sh
 
 smarther_path_dir=/config/smarther
-gh_repo_url="https://github.com/malesci/smarther-v1"
+gh_repo_url="https://github.com/danye72/smarther-v1"
 
 log=$smarther_path_dir/update.log
 
