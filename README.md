@@ -112,9 +112,12 @@ homeassistant:
 > Next updates will be done by Home Assistant script, no need to clone and run install command every time, just the first time.
 > 
 ### 3.1. Open a terminal in Home Assistant
-Open a shell (for HA supervised installation you can use addon like "*SSH & Web Terminal*")
+Open a shell in Home Assisant. Make sure you are write permission on `/config folder`.
 
-### 3.1. GitHub clone repo & Run install command 
+- for HASSOS or HA supervised installation you can use addon like "*SSH & Web Terminal*"
+- for HA core you can exec into the docker container (usually with command like docker exec -it "container name" /bin/bash)
+
+### 3.2. GitHub clone repo & Run install command 
 ```
 cd / && git clone https://github.com/danye72/smarther-v1 \
 && cd /smarther-v1 && chmod +x ./script/update \
@@ -122,7 +125,7 @@ cd / && git clone https://github.com/danye72/smarther-v1 \
 ```
 ![terminal](https://user-images.githubusercontent.com/36844281/117135819-c3bcb500-ada7-11eb-8f04-73813cac2aae.PNG)
 
-### 3.2. Validate HA configuration and Restart
+### 3.3. Validate HA configuration and Restart
 ![validate reboot](https://user-images.githubusercontent.com/36844281/117128047-31afaf00-ad9d-11eb-9574-6e2e93b214e4.PNG)
 
 ## 4. Lovelace card
