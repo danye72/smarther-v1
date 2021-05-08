@@ -1,5 +1,5 @@
-# v6.0.3
-# gestione spegnimento boost
+# v7
+# fix nomi termostato
 
 from datetime import datetime, timedelta
 import requests, json, time, sys, pathlib
@@ -117,7 +117,7 @@ class Termostato:
             count = 0
             for modules in self.topology["plants"][top_count]["plant"]["modules"]:
                 if self.module_id == self.topology["plants"][top_count]["plant"]["modules"][count]["id"]:
-                    nome = self.topology["plants"][top_count]["plant"]["modules"][count]["name"]
+                    nome = self.topology["plants"][top_count]["plant"]["modules"][count]["name"].replace(" ", "_").lower()
                 count += 1
             top_count += 1
         self.nome = nome
@@ -127,7 +127,7 @@ class Termostato:
         for plant in self.topology["plants"]:
             count = 0
             for modules in self.topology["plants"][top_count]["plant"]["modules"]:
-                if self.nome == self.topology["plants"][top_count]["plant"]["modules"][count]["name"]:
+                if self.nome == self.topology["plants"][top_count]["plant"]["modules"][count]["name"].replace(" ", "_").lower():
                     plant_id = self.topology["plants"][top_count]["plant"]["id"]
                 count += 1
             top_count += 1
@@ -138,7 +138,7 @@ class Termostato:
         for plant in self.topology["plants"]:
             count = 0
             for modules in self.topology["plants"][top_count]["plant"]["modules"]:
-                if self.nome == self.topology["plants"][top_count]["plant"]["modules"][count]["name"]:
+                if self.nome == self.topology["plants"][top_count]["plant"]["modules"][count]["name"].replace(" ", "_").lower():
                     module_id = self.topology["plants"][top_count]["plant"]["modules"][count]["id"]
                 count += 1
             top_count += 1
