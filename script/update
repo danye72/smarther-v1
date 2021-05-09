@@ -6,8 +6,8 @@ gh_repo_url="https://github.com/danye72/smarther-v1"
 log=$smarther_path_dir/update.log
 
 if [ ! -d "$smarther_path_dir" ]; then
-   mkdir -p "$smarther_path_dir"
-   echo "$(date) | WARN  | $smarther_path_dir not exist. Folder created" >> $log
+    mkdir -p "$smarther_path_dir"
+    echo "$(date) | WARN  | $smarther_path_dir not exist. Folder created" >> $log
 fi
 
 path_dir=/$(echo "$gh_repo_url" | sed -r 's|.*/(.*)$|\1|')
@@ -17,10 +17,10 @@ if [ ! -d "$path_dir" ]; then
     git clone $gh_repo_url >> $log 2>&1
     ret=$?
     if (test "$ret" -eq 0); then
-       echo "$(date) | INFO  | Repository successfully cloned." >> $log
+        echo "$(date) | INFO  | Repository successfully cloned." >> $log
     else
-       echo "$(date) | ERROR | Repository cloning failed." >> $log
-       exit 1
+        echo "$(date) | ERROR | Repository cloning failed." >> $log
+        exit 1
     fi
 else
     echo "$(date) | INFO  | --- Pulling from GitHub ------" >> $log
@@ -28,10 +28,10 @@ else
     git pull $gh_repo_url >> $log 2>&1
     ret=$?
     if (test "$ret" -eq 0); then
-       echo "$(date) | INFO  | Repository successfully pulled." >> $log
+        echo "$(date) | INFO  | Repository successfully pulled." >> $log
     else
-       echo "$(date) | ERROR | Repository pulling failed." >> $log
-       exit 1
+        echo "$(date) | ERROR | Repository pulling failed." >> $log
+        exit 1
     fi
 fi
 
