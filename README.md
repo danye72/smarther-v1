@@ -70,7 +70,7 @@ These are the variables to add in your secrets file
 |`bticino_thermostat_client_secret`   | received via email                | **********************************
 |`bticino_thermostat_subscription_key`| primary key from Legrand subscription   | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 |`bticino_thermostat_code`            | get in browser from the previous step | *[very long string]*
-|`bticino_thermostat_name`            | name of the thermostat in BTicino App  | string *[avoid space in this name]*
+|`bticino_thermostat_name`            | name of the thermostat in BTicino App  | string *[uppercases and spaces are allowed]*
 |`domain`                             | public Home Assistant URL         | string
 
 > **Note**: In case you Home Assistant server is placed at your home, make sure to have port forwarding properly configured in your home modem/router in order that public Home Assistant URL address is be reachable from Legran!
