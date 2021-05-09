@@ -14,8 +14,8 @@ if [ ! -d "$path_dir" ]; then
    echo "$(date) | WARN  | $path_dir not exist. Folder created" >> $log
 fi
 if [ ! -d "$package_dir" ]; then
-    mkdir -p "$package_dir"
-    echo "$(date) | WARN  | Folder $package_dir not exist. Created." >> $log
+   mkdir -p "$package_dir"
+   echo "$(date) | WARN  | Folder $package_dir not exist. Created." >> $log
 fi
 
 if [ ! -d ./smarther ]; then
@@ -47,7 +47,15 @@ if [ ! -f ./TERMOSTATO_CARD.txt ]; then
    echo "$(date) | ERROR | File ./TERMOSTATO_CARD.txt is missing. Check repo URL." >> $log
    error=true
 fi
-   
+
+if ! awk '/\r$/ { exit(1) }' /config/secrets.yaml ; then
+   echo "$(date) | WARN  | secrets file has at least one Windows-style line ending. It will be converted"
+   cat /config/secrets.yaml \
+   | awk '{ sub("\r$", ""); print }' \
+   > /config/secrets_temp.yaml
+   mv /config/secrets_temp.yaml /config/secrets.yaml
+fi
+
 client_id=$(./script/get_secret bticino_thermostat_client_id)
 client_secret=$(./script/get_secret bticino_thermostat_client_secret)
 subscription_key=$(./script/get_secret bticino_thermostat_subscription_key)
