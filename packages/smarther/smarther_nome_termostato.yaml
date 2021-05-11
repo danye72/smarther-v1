@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     package.node_anchors:
-       
+
     ##--------------------- IMPOSTAZIONI DEL PACKAGE ---------------------##
       #Sostituire l'ultima parte dei comandi con il nome del termostato impostato sull'app che non deve contenere spazi
 

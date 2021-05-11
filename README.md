@@ -1,3 +1,4 @@
+
 # BTicino Smarther integration for Home Assistant
 
 Hi! This project is developed and maintenance by a small community of passionate people who make this solution available for free. 
@@ -70,10 +71,10 @@ These are the variables to add in your secrets file
 |`bticino_thermostat_client_secret`   | received via email                | **********************************
 |`bticino_thermostat_subscription_key`| primary key from Legrand subscription   | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 |`bticino_thermostat_code`            | get in browser from the previous step | *[very long string]*
-|`bticino_thermostat_name`            | name of the thermostat in BTicino App  | string *[uppercases and spaces are allowed]*
+|`bticino_thermostat_name`            | name of the thermostat in BTicino App  | string *[comma separated list in case of multiple thermostat, uppercases and spaces are allowed]*
 |`domain`                             | public Home Assistant URL         | string
 
-> **Note**: In case you Home Assistant server is placed at your home, make sure to have port forwarding properly configured in your home modem/router in order that public Home Assistant URL address is be reachable from Legran!
+> **Note**: In case you Home Assistant server is placed at your home, make sure to have port forwarding properly configured in your home modem/router in order that public Home Assistant URL address is be reachable from Legrand!
 
 #### Update your Secrets file with the variables
 Add the following lines in your Home Assistant secrets file placed in `/config/secrets.yaml`
@@ -84,7 +85,7 @@ bticino_thermostat_client_id: e9d1c3c5-a7e0-4f00-a8e2-6f402f919953
 bticino_thermostat_client_secret: qT128rk4~o_V.O_-Do-tOHO7W07X5w6v3~
 bticino_thermostat_subscription_key: 5bc08c57bf24458ab8c155fc37cf955c
 bticino_thermostat_code: [very long string]
-bticino_thermostat_name: mydevice
+bticino_thermostat_name: mydevice1, My Device2
 domain: mydomain.duckdns.com [specify the port if is not standard 443]
 ```
 
@@ -103,7 +104,7 @@ homeassistant:
 homeassistant:
   ...
   packages:
-    package_1: !include packages/smarther/smarther.yaml
+    package_1: !include packages/smarther/smarther_<<thermostat_name>>.yaml
     package_2: !include packages/smarther/smarther_webhooks.yaml
     package_3: !include packages/smarther/smarther_update.yaml
 ```
@@ -112,12 +113,12 @@ homeassistant:
 > Next updates will be done by Home Assistant script, no need to clone and run install command every time, just the first time.
 > 
 ### 3.1. Open a terminal in Home Assistant
-Open a shell in Home Assisant. Make sure you are write permission on `/config folder`.
+Open a shell in Home Assistant. Make sure you are write permission on `/config folder`.
 
 - for HASSOS or HA supervised installation you can use addon like "*SSH & Web Terminal*"
 - for HA core you can exec into the docker container (usually with command like docker exec -it "container name" /bin/bash)
 
-### 3.2. GitHub clone repo & Run install command 
+### 3.2. GitHub clone repository & Run install command 
 ```
 cd / && git clone https://github.com/danye72/smarther-v1 \
 && cd /smarther-v1 && chmod +x ./script/update \
