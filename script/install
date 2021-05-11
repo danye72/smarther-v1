@@ -63,6 +63,8 @@ client_secret=$(./script/get_secret bticino_thermostat_client_secret)
 subscription_key=$(./script/get_secret bticino_thermostat_subscription_key)
 code=$(./script/get_secret bticino_thermostat_code)
 domain=$(./script/get_secret domain)
+thermostat_name_orig=$(./script/get_secret bticino_thermostat_name)
+thermostat_name_list=`echo $thermostat_name_orig | awk '{print tolower($0)}'`
 
 if [ -z "$client_id" ]; then
    echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_client_id>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
@@ -84,18 +86,7 @@ if [ -z "$domain" ]; then
    echo "$(date) | ERROR | The mandatory variable <<domain>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
    error=true
 fi
-
-#echo "Loop through a comma-separated shell variable // to support multiple thermostat" >> $log
-#variable=$(./get_secret bticino_thermostat_name)
-#for i in $(echo $variable | sed "s/,/ /g")
-#do
-#    # call your procedure/other scripts here below
-#    echo "$i"
-#done
-thermostat_name_orig=$(./script/get_secret bticino_thermostat_name)
-thermostat_name=`echo $thermostat_name_orig | awk '{print tolower($0)}'`
-
-if [ -z "$thermostat_name" ]; then
+if [ -z "$thermostat_name_list" ]; then
    echo "$(date) | ERROR | The mandatory variable <<bticino_thermostat_name>> not set to the secret file. Please add it on /config/secrets.yaml file!" >> $log
    error=true
 fi
@@ -118,23 +109,33 @@ if [ $error = false ]; then
    mv $path_dir/conf_smarther_temp.json $path_dir/conf_smarther.json
    echo "$(date) | INFO  | Saved $path_dir/conf_smarther.json" >> $log
 
-   echo "$(date) | INFO  | Copy smarther_nome_termostato.yaml in $package_dir/smarther_$thermostat_name.yaml" >> $log
-   cat ./packages/smarther/smarther_nome_termostato.yaml \
-   | sed "s/nome_termostato/$thermostat_name"/g \
-   > $package_dir/smarther_$thermostat_name.yaml
-   echo "$(date) | INFO  | Saved $package_dir/smarther_$thermostat_name.yaml" >> $log
+   entity_id_orig=$(cat ./packages/smarther/smarther_webhooks.yaml | grep entity_id: | grep -Eo ':.*' | sed 's/://')
+
+   echo "$(date) | INFO  | Loop through a comma-separated shell variable // to support multiple thermostat" >> $log
+   for thermostat_name in $(echo $thermostat_name_list | sed "s/,/ /g")
+      do
+      entity_id_target=$entity_id_target,$(echo $entity_id_orig | sed "s/nome_termostato/$thermostat_name"/g)
+
+      echo "$(date) | INFO  | Copy smarther_nome_termostato.yaml in $package_dir/smarther_$thermostat_name.yaml" >> $log
+      cat ./packages/smarther/smarther_nome_termostato.yaml \
+      | sed "s/nome_termostato/$thermostat_name"/g \
+      > $package_dir/smarther_$thermostat_name.yaml
+      echo "$(date) | INFO  | Saved $package_dir/smarther_$thermostat_name.yaml" >> $log
+
+      echo "$(date) | INFO  | Copy TERMOSTATO_CARD.txt" >> $log
+      cat ./TERMOSTATO_CARD.txt \
+      | sed "s/nome_termostato/$thermostat_name"/g \
+      > $path_dir/TERMOSTATO_CARD_$thermostat_name.txt
+      echo "$(date) | INFO  | Saved $path_dir/TERMOSTATO_CARD_$thermostat_name.txt" >> $log
+   done
 
    echo "$(date) | INFO  | Copy smarther_webhooks.yaml" >> $log
+   entity_id_target=$(echo $entity_id_target | sed 's/^,//')
+
    cat ./packages/smarther/smarther_webhooks.yaml \
-   | sed "s/nome_termostato/$thermostat_name"/g \
+   | sed "s/$entity_id_orig/ $entity_id_target"/ \
    > $package_dir/smarther_webhooks.yaml
    echo "$(date) | INFO  | Saved $package_dir/smarther_webhooks.yaml" >> $log
-
-   echo "$(date) | INFO  | Copy TERMOSTATO_CARD.txt" >> $log
-   cat ./TERMOSTATO_CARD.txt \
-   | sed "s/nome_termostato/$thermostat_name"/g \
-   > $path_dir/TERMOSTATO_CARD_$thermostat_name.txt
-   echo "$(date) | INFO  | Saved $path_dir/TERMOSTATO_CARD_$thermostat_name.txt" >> $log
    
    echo "$(date) | INFO  | --- INSTALLATION COMPLETED ---" >> $log
    echo "$(date) | INFO  | ------------------------------" >> $log
