@@ -141,6 +141,7 @@ if [ $error = false ]; then
    echo "$(date) | INFO  | Copy files to $path_dir" >> $log
    cp $temp_dir/smarther/smarther.py $path_dir/smarther.py
    cp $temp_dir/script/update $path_dir/update
+   cp $temp_dir/.smarther_version $path_dir/.smarther_version
    
    echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
    cat $temp_dir/smarther/conf_smarther.json \
