@@ -1,4 +1,5 @@
 
+
 # BTicino Smarther integration for Home Assistant
 
 Hi! This project is developed and maintenance by a small community of passionate people who make this solution available for free. 
@@ -118,13 +119,14 @@ Open a shell in Home Assistant. Make sure you are write permission on `/config f
 - for HASSOS or HA supervised installation you can use addon like "*SSH & Web Terminal*"
 - for HA core you can exec into the docker container (usually with command like docker exec -it "container name" /bin/bash)
 
-### 3.2. GitHub clone repository & Run install command 
+### 3.2. GitHub download latest released version & Run install command 
 ```
-cd / && git clone https://github.com/danye72/smarther-v1 \
-&& cd /smarther-v1 && chmod +x ./script/update \
-&& sh ./script/update
+gh_repo="danye72/smarther-v1" \
+&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases/latest" | jq -r ".tag_name") \
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s
 ```
-![terminal](https://user-images.githubusercontent.com/36844281/117135819-c3bcb500-ada7-11eb-8f04-73813cac2aae.PNG)
+![1install](https://user-images.githubusercontent.com/36844281/120300089-e620f000-c2cb-11eb-923b-c8a9c560d55e.PNG)
+![1install-end](https://user-images.githubusercontent.com/36844281/120300094-e7eab380-c2cb-11eb-992c-a1725d2455ce.PNG)
 
 ### 3.3. Validate HA configuration and Restart
 ![validate reboot](https://user-images.githubusercontent.com/36844281/117128047-31afaf00-ad9d-11eb-9574-6e2e93b214e4.PNG)

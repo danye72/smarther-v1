@@ -1,65 +1,84 @@
 #!/bin/sh
 
-smarther_path_dir=/config/smarther
-gh_repo_url="https://github.com/danye72/smarther-v1"
+#SHOULD_INITIALIZE=0
+path_dir="/config/smarther"
+github_repo="danye72/smarther-v1"
 
-log=$smarther_path_dir/update.log
+# Loop through arguments and process them
+for arg in "$@"
+do
+    case $arg in
+        #-i|--initialize)
+        #SHOULD_INITIALIZE=1
+        #shift # Remove --initialize from processing
+        #;;
+        #-p=*|--path=*)
+        #path_dir="${arg#*=}"
+        #shift # Remove --path= from processing
+        #;;
+        -p|--path)
+        path_dir="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        -r|--repo)
+        github_repo="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        *)
+    esac
+done
 
-if [ ! -d "$smarther_path_dir" ]; then
-    mkdir -p "$smarther_path_dir"
-    echo "$(date) | WARN  | $smarther_path_dir not exist. Folder created" >> $log
-fi
-
-path_dir=/$(echo "$gh_repo_url" | sed -r 's|.*/(.*)$|\1|')
-if [ ! -d "$path_dir" ]; then
-    echo "$(date) | INFO  | --- Cloning from GitHub ------" >> $log
-    cd /
-    git clone $gh_repo_url >> $log 2>&1
-    ret=$?
-    if (test "$ret" -eq 0); then
-        echo "$(date) | INFO  | Repository successfully cloned." >> $log
-    else
-        echo "$(date) | ERROR | Repository cloning failed." >> $log
-        exit 1
-    fi
-else
-    echo "$(date) | INFO  | --- Pulling from GitHub ------" >> $log
-    cd $path_dir
-    git pull $gh_repo_url >> $log 2>&1
-    ret=$?
-    if (test "$ret" -eq 0); then
-        echo "$(date) | INFO  | Repository successfully pulled." >> $log
-    else
-        echo "$(date) | ERROR | Repository pulling failed." >> $log
-        exit 1
-    fi
-fi
-
-cd $path_dir
+log="$path_dir/update.log"
+temp_dir="$path_dir/.temp"
 error=false
 
-if [ ! -f ./script/get_secret ]; then
-    echo "$(date) | ERROR | File ./script/get_secret is missing. Check repo URL." >> $log
-    error=true
+if [ ! -d "$path_dir" ]; then
+    mkdir -p $path_dir
+    echo "$(date) | WARN  | $path_dir not exist. Folder created" >> $log
+fi
+if [ ! -d "$temp_dir" ]; then
+    mkdir -p $temp_dir
+    echo "$(date) | INFO  | Creating temporary folder $temp_dir" >> $log
+else
+    rm -rf $temp_dir/*
+    echo "$(date) | WARN  | Clean-up temporary folder $temp_dir" >> $log
 fi
 
-if [ ! -f ./script/update ]; then
-    echo "$(date) | ERROR | File ./script/update is missing. Check repo URL." >> $log
-    error=true
-fi
+#curl -s "https://api.github.com/repos/$github_repo/releases/latest" \
+#| grep '"tag_name":' \
+#| sed -E 's/.*"([^"]+)".*/\1/' \
+#| xargs -I {} wget -O $temp_dir/smarther.tar.gz "https://api.github.com/repos/$github_repo/tarball/"{}
 
-if [ ! -f ./script/install ]; then
-    echo "$(date) | ERROR | File ./script/install is missing. Check repo URL." >> $log
+latest_release=$(curl -ksL "https://api.github.com/repos/$github_repo/releases/latest")
+if [ ! -z "$latest_release" ]; then
+    wget -O $temp_dir/smarther.tar.gz $(echo $latest_release | jq -r ".tarball_url")
+    if [ ! -f "$temp_dir/smarther.tar.gz" ]; then
+        echo "$(date) | ERROR | Something went wrong downloading latest relese: $(echo $latest_release | jq -r ".tarball_url")" >> $log
+        error=true
+    fi
+    tar -xvf $temp_dir/smarther.tar.gz --exclude="*/.*/*" --strip 1 --directory $temp_dir
+    if [ ! -f "$temp_dir/script/update" ]; then
+        echo "$(date) | ERROR | File $temp_dir/script/update is missing. Check repo URL" >> $log
+        error=true
+    fi
+    if [ ! -f "$temp_dir/script/install" ]; then
+        echo "$(date) | ERROR | File $temp_dir/script/install is missing. Check repo URL" >> $log
+        error=true
+    fi  
+else   
+    echo "$(date) | ERROR | Something went wrong downloading latest relese info: https://api.github.com/repos/$github_repo/releases/latest" >> $log
     error=true
 fi
 
 if [ $error = false ]; then
-    echo "$(date) | INFO  | Launch install script." >> $log
-    chmod +x ./script/get_secret
-    chmod +x ./script/update
-    chmod +x ./script/install
-    sh -x ./script/install >> $log
+    echo $latest_release | python -m json.tool > $temp_dir/.smarther_version
+    echo "$(date) | INFO  | Launch install script" >> $log
+    chmod +x $temp_dir/script/update
+    chmod +x $temp_dir/script/install
+    sh -x $temp_dir/script/install --path $path_dir --repo $github_repo >> $log
 else
-    echo "$(date) | ERROR | Something went wrong :( Checks the log file." >> $log
+    echo "$(date) | ERROR | Something went wrong :( Checks the log file" >> $log
     exit 1
 fi

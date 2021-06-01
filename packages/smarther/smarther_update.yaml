@@ -6,3 +6,43 @@ script:
     alias: Update smarther integration from GitHub repository
     sequence:
     - service: shell_command.smarther_update
+
+# Example configuration.yaml entry
+rest:
+  - scan_interval: 10800
+    resource: https://api.github.com/repos/__github_repo__/releases/latest
+    sensor:
+      - name: "Smarther latest release"
+        value_template: "{{ value_json.tag_name }}"
+        json_attributes:
+          - "html_url"
+          - "name"
+          - "draft"
+          - "prerelease"
+          - "published_at"
+          - "body"
+
+sensor:
+  - platform: command_line
+    name: "Smarther current release"
+    command: cat /config/smarther/.smarther_version
+    scan_interval: 10800
+    value_template: '{{ value_json.tag_name }}'
+    json_attributes:
+      - "html_url"
+      - "name"
+      - "draft"
+      - "prerelease"
+      - "published_at"
+      - "body"
+
+binary_sensor:
+  - platform: template
+    sensors:
+      smarther_updater:
+        friendly_name: "Smarther updater"
+        value_template: "{{ states('sensor.smarther_current_release') < states('sensor.smarther_latest_release') }}"
+        device_class: moving
+        attribute_templates:
+          current_version: "{{ states('sensor.smarther_current_release') }}"
+          latest_version: "{{ states('sensor.smarther_latest_release') }}"
