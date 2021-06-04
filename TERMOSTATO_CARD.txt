@@ -7,7 +7,7 @@
 
     ##--------------------------------------------------------------------##
 
-type: 'custom:layout-card'
+type: custom:layout-card
 style: |
   ha-card {
     width: 385px !important;
@@ -41,13 +41,13 @@ cards:
       - entity: input_boolean.temperatura_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:config-template-card'
+      type: custom:config-template-card
       variables:
-        - 'states[''input_select.smarther_nome_termostato_language''].state'
+        - states['input_select.smarther_nome_termostato_language'].state
       entities:
         - input_select.smarther_nome_termostato_language
       card:
-        type: 'custom:apexcharts-card'
+        type: custom:apexcharts-card
         style: |
           ha-card { 
             box-shadow: 0px 0px;
@@ -139,13 +139,13 @@ cards:
       - entity: input_boolean.umidita_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:config-template-card'
+      type: custom:config-template-card
       variables:
-        - 'states[''input_select.smarther_nome_termostato_language''].state'
+        - states['input_select.smarther_nome_termostato_language'].state
       entities:
         - input_select.smarther_nome_termostato_language
       card:
-        type: 'custom:apexcharts-card'
+        type: custom:apexcharts-card
         style: |
           ha-card { 
             box-shadow: 0px 0px;
@@ -235,7 +235,7 @@ cards:
       - entity: input_boolean.smarther_nome_termostato_info
         state: 'on'
     card:
-      type: 'custom:layout-card'
+      type: custom:layout-card
       style: |
         ha-card {
           width: 255px !important;
@@ -244,7 +244,7 @@ cards:
       gridcols: 267px
       gridrows: 30px 27px 25px 27px 25px 27px 25px 27px 59px
       cards:
-        - type: 'custom:layout-card'
+        - type: custom:layout-card
           layout_type: grid
           layout_options:
             grid-template-columns: 210px 55px
@@ -309,15 +309,15 @@ cards:
               size: 40px
               state:
                 - value: EN
-                  icon: 'mdi:translate'
+                  icon: mdi:translate
                   name: ENGLISH
                 - value: IT
-                  icon: 'mdi:translate'
+                  icon: mdi:translate
                   name: ITALIAN
               styles:
                 card:
                   - font-size: 10px
-              type: 'custom:button-card'
+              type: custom:button-card
         - type: markdown
           style: |
             ha-card { 
@@ -342,15 +342,15 @@ cards:
               'IT') %}
             ABILITA/DISABILITA WEBHOOKS
             {% endif %}
-        - type: 'custom:layout-card'
+        - type: custom:layout-card
           layout_type: grid
           layout_options:
             grid-template-columns: 210px 55px
             grid-template-rows: auto
           cards:
-            - type: 'custom:config-template-card'
+            - type: custom:config-template-card
               variables:
-                - 'states[''input_select.smarther_nome_termostato_language''].state'
+                - states['input_select.smarther_nome_termostato_language'].state
               entities:
                 - input_select.smarther_nome_termostato_language
               card:
@@ -395,7 +395,7 @@ cards:
                 show_state: true
                 show_name: true
                 layout: icon_name_state
-                icon: 'mdi:timer-sand'
+                icon: mdi:timer-sand
                 name: >-
                   ${vars[0] === 'EN' ? 'LAST DELAY' : vars[0] === 'IT' ?
                   'RITARDO'
@@ -409,10 +409,10 @@ cards:
                 styles:
                   card:
                     - font-size: 10px
-                type: 'custom:button-card'
-            - type: 'custom:config-template-card'
+                type: custom:button-card
+            - type: custom:config-template-card
               variables:
-                - 'states[''input_select.smarther_nome_termostato_language''].state'
+                - states['input_select.smarther_nome_termostato_language'].state
               entities:
                 - input_select.smarther_nome_termostato_language
               card:
@@ -440,7 +440,7 @@ cards:
                 name: |-
                   ${vars[0] === 'EN' ? 'GRAPHIC' : vars[0] === 'IT' ? 'GRAFICO'
                     : 'no language'}
-                icon: 'mdi:chart-areaspline-variant'
+                icon: mdi:chart-areaspline-variant
                 size: 40px
                 styles:
                   card:
@@ -450,7 +450,7 @@ cards:
                   service: input_boolean.turn_on
                   service_data:
                     entity_id: input_boolean.delay_smarther_nome_termostato
-                type: 'custom:button-card'
+                type: custom:button-card
         - type: markdown
           style: |
             ha-card { 
@@ -475,9 +475,9 @@ cards:
               'IT') %}
             ABILITA/DISABILITA CHIAMATE API
             {% endif %}
-        - type: 'custom:config-template-card'
+        - type: custom:config-template-card
           variables:
-            - 'states[''input_select.smarther_nome_termostato_language''].state'
+            - states['input_select.smarther_nome_termostato_language'].state
           entities:
             - input_select.smarther_nome_termostato_language
           card:
@@ -523,7 +523,7 @@ cards:
             show_state: true
             show_name: true
             layout: icon_name_state
-            icon: 'mdi:clock-check-outline'
+            icon: mdi:clock-check-outline
             name: >-
               ${vars[0] === 'EN' ? 'LAST UPDATE' : vars[0] === 'IT' ? 'ULTIMO
               AGGIORNAMENTO'
@@ -537,7 +537,7 @@ cards:
             styles:
               card:
                 - font-size: 10px
-            type: 'custom:button-card'
+            type: custom:button-card
         - type: markdown
           style: |
             ha-card { 
@@ -557,71 +557,190 @@ cards:
           content: |
             {% if is_state('input_select.smarther_nome_termostato_language',
               'EN') %} 
-            UPDATE PROGRAM LIST
+            UPDATING PROGRAMS AND CARD
             {% elif is_state('input_select.smarther_nome_termostato_language',
               'IT') %}
-            AGGIORNA L'ELENCO DEI PROGRAMMI
+            AGGIORNAMENTO PROGRAMMI E CARD
             {% endif %}
-        - type: 'custom:config-template-card'
-          variables:
-            - 'states[''input_select.smarther_nome_termostato_language''].state'
-          entities:
-            - input_select.smarther_nome_termostato_language
-          card:
-            confirmation:
-              text: >-
-                ${vars[0] === 'EN' ? 'Are you sure you want to update the
-                program list?' : vars[0] === 'IT' ? 'Sei sicuro di voler
-                aggiornare l\'elenco dei programmi?' : 'no language'}
-            style: |
-              ha-card {
-                margin-top: -4px;
-                height: 25px !important;
-                width: 265px !important;
-                box-shadow: 0px 0px;
-                #border-style: solid;
-                border-radius: 0px !important;
-                margin-left: -16px !important;
-              }
-              ha-icon {
-               color: rgb(102, 153, 255) !important;  
-               margin-left: 5px !important;
-              }
-              #name {
-                max-width: 50%;
-                margin-left: -60px !important;
-                justify-self: left !important;
-                /* margin: auto; */
-              }
-              #container {
-                display: grid;
-                width: 100% !important;
-                height: 15px !important;
-                text-align: left !important;
-                align-items: left !important;
-                margin-top: 0px !important;
-                #border-style: solid;
-              }
-            entity: sensor.smarther_lista_programmi_nome_termostato
-            show_state: false
-            show_name: true
-            layout: icon_name_state
-            icon: 'mdi:update'
-            name: >-
-              ${vars[0] === 'EN' ? 'CLICK TO UPDATE' : vars[0] === 'IT' ?
-              'CLICCA PER AGGIORNARE'
-                : 'no language'}
-            tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
-                entity_id: script.smarther_nome_termostato_carica_programmi
-            size: 30px
-            styles:
+        - type: custom:layout-card
+          layout_type: grid
+          layout_options:
+            grid-template-columns: 210px 55px
+            grid-template-rows: auto
+          cards:
+            - type: custom:config-template-card
+              variables:
+                - states['input_select.smarther_nome_termostato_language'].state
+              entities:
+                - input_select.smarther_nome_termostato_language
               card:
-                - font-size: 10px
-            type: 'custom:button-card'
-        - type: 'custom:layout-card'
+                confirmation:
+                  text: >-
+                    ${vars[0] === 'EN' ? 'Are you sure you want to update the
+                    program list?' : vars[0] === 'IT' ? 'Sei sicuro di voler
+                    aggiornare l\'elenco dei programmi?' : 'no language'}
+                style: |
+                  ha-card {
+                    margin-top: -4px;
+                    height: 25px !important;
+                    width: 132px !important;
+                    box-shadow: 0px 0px;
+                    #border-style: solid;
+                    border-radius: 0px !important;
+                    margin-left: -24px !important;
+                    padding-right: 5px !important;
+                  }
+                  ha-icon {
+                   color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
+                   margin-left: 5px !important;
+                  }
+                  #name {
+                    #max-width: 50%;
+                    margin-left: -5px !important;
+                    justify-self: left !important;
+                    /* margin: auto; */
+                    margin-right: 250px !important;
+                  }
+                  #container {
+                    display: grid;
+                    #width: 100% !important;
+                    height: 17px !important;
+                    text-align: left !important;
+                    align-items: left !important;
+                    margin-top: 0px !important;
+                    #border-style: solid;
+                  }
+                entity: sensor.smarther_lista_programmi_nome_termostato
+                show_state: false
+                show_name: true
+                layout: icon_name_state
+                icon: mdi:update
+                name: >-
+                  ${vars[0] === 'EN' ? 'UPDATE PROGRAM' : vars[0] === 'IT' ?
+                  'AGG. PROGRAMMI'
+                    : 'no language'}
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.smarther_nome_termostato_carica_programmi
+                size: 30px
+                styles:
+                  card:
+                    - font-size: 10px
+                type: custom:button-card
+            - type: conditional
+              conditions:
+                - entity: input_boolean.smarther_update_available
+                  state: 'off'
+              card:
+                type: custom:config-template-card
+                variables:
+                  - states['input_select.smarther_nome_termostato_language'].state
+                  - states['sensor.smarther_current_release'].state
+                  - states['sensor.smarther_latest_release'].state
+                  - states['sensor.smarther_latest_release'].attributes.body
+                entities:
+                  - input_select.smarther_nome_termostato_language
+                  - sensor.smarther_current_release
+                card:
+                  confirmation:
+                    text: >-
+                      ${vars[0] === 'EN' ? 'No updates available'  : vars[0] ===
+                      'IT' ? 'Nessun aggiornamento disponibile' : 'no language'}
+                  color: green
+                  style: |
+                    ha-card {
+                      margin-top: -4px;
+                      margin-left: -102px !important;
+                      height: 25px !important;
+                      width: 133px !important;         
+                      box-shadow: 0px 0px;
+                      border-radius: 0px !important;
+                    }
+                    ha-icon {
+                     color: green  
+                     margin-left: -6px !important;
+                    }
+                    #name {
+                      #max-width: 50%;
+                      margin-left: -12px !important;
+                      justify-self: left !important;
+                      /* margin: auto; */
+                    }
+                  show_state: false
+                  show_name: true
+                  layout: icon_name_state
+                  icon: mdi:check-bold
+                  name: >-
+                    ${ vars[0] === 'EN' ? 'CARD ' + vars[1]  : vars[0] === 'IT'
+                    ? 'CARD ' + vars[1] : 'no language'}
+                  size: 17px
+                  styles:
+                    card:
+                      - font-size: 10px
+                  type: custom:button-card
+            - type: conditional
+              conditions:
+                - entity: input_boolean.smarther_update_available
+                  state: 'on'
+              card:
+                type: custom:config-template-card
+                variables:
+                  - states['input_select.smarther_nome_termostato_language'].state
+                  - states['sensor.smarther_current_release'].state
+                  - states['sensor.smarther_latest_release'].state
+                  - states['sensor.smarther_latest_release'].attributes.body
+                  - states['input_boolean.smarther_update_available'].state
+                entities:
+                  - input_select.smarther_nome_termostato_language
+                  - sensor.smarther_current_release
+                card:
+                  confirmation:
+                    text: >-
+                      ${vars[0] === 'EN' ? 'Are you sure you want to update the
+                      card to the version ' + vars[2] + '?\n\nCHANGELOG\:\n\n' +
+                      vars[3] : vars[0] === 'IT' ? 'Sei sicuro di voler
+                      aggiornare la card alla versione ' + vars[2] +
+                      '?\n\nCHANGELOG\:\n\n' + vars[3] : 'no language'}
+                  color: green
+                  style: |
+                    ha-card {
+                      margin-top: -4px;
+                      margin-left: -102px !important;
+                      height: 25px !important;
+                      width: 133px !important;         
+                      box-shadow: 0px 0px;
+                      border-radius: 0px !important;
+                    }
+                    ha-icon {
+                     color: red !important;
+                     #margin-left: -6px !important;
+                    }
+                    #name {
+                      #max-width: 50%;
+                      margin-left: -12px !important;
+                      justify-self: left !important;
+                      /* margin: auto; */
+                    }
+                  show_state: false
+                  show_name: true
+                  layout: icon_name_state
+                  icon: mdi:alert
+                  name: >-
+                    ${ vars[0] === 'EN' ? 'UPDATE TO ' + vars[2] : vars[0] ===
+                    'IT' ? 'AGGIORNA A ' + vars[2] : 'no language'}
+                  tap_action:
+                    action: call-service
+                    service: script.turn_on
+                    service_data:
+                      entity_id: script.update_from_smarther_github_repo
+                  size: 17px
+                  styles:
+                    card:
+                      - font-size: 10px
+                  type: custom:button-card
+        - type: custom:layout-card
           layout_type: grid
           layout_options:
             grid-template-columns: 210px 55px
@@ -680,7 +799,7 @@ cards:
                 [[[ return "ON x " +
                 states['sensor.smarther_nome_termostato_on_today_in_minutes'].state + "
                 Min" ]]]
-              icon: 'mdi:chart-bar'
+              icon: mdi:chart-bar
               size: 40px
               styles:
                 card:
@@ -690,14 +809,14 @@ cards:
                 service: input_boolean.turn_on
                 service_data:
                   entity_id: input_boolean.on_time_smarther_nome_termostato
-              type: 'custom:button-card'
-        - type: 'custom:config-template-card'
+              type: custom:button-card
+        - type: custom:config-template-card
           variables:
-            - 'states[''input_select.smarther_nome_termostato_language''].state'
+            - states['input_select.smarther_nome_termostato_language'].state
           entities:
             - input_select.smarther_nome_termostato_language
           card:
-            type: 'custom:apexcharts-card'
+            type: custom:apexcharts-card
             style: |
               ha-card { 
                 height: 69px !important;
@@ -797,13 +916,13 @@ cards:
       - entity: input_boolean.delay_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:config-template-card'
+      type: custom:config-template-card
       variables:
-        - 'states[''input_select.smarther_nome_termostato_language''].state'
+        - states['input_select.smarther_nome_termostato_language'].state
       entities:
         - input_select.smarther_nome_termostato_language
       card:
-        type: 'custom:apexcharts-card'
+        type: custom:apexcharts-card
         style: |
           ha-card { 
             box-shadow: 0px 0px;
@@ -893,13 +1012,13 @@ cards:
       - entity: input_boolean.on_time_smarther_nome_termostato
         state: 'on'
     card:
-      type: 'custom:config-template-card'
+      type: custom:config-template-card
       variables:
-        - 'states[''input_select.smarther_nome_termostato_language''].state'
+        - states['input_select.smarther_nome_termostato_language'].state
       entities:
         - input_select.smarther_nome_termostato_language
       card:
-        type: 'custom:apexcharts-card'
+        type: custom:apexcharts-card
         style: |
           ha-card { 
             box-shadow: 0px 0px;
@@ -1037,7 +1156,7 @@ cards:
         minmax: 'off'
         name: 'off'
         value: 'off'
-      type: 'custom:bar-card'
+      type: custom:bar-card
   - type: conditional
     conditions:
       - entity: sensor.smarther_nome_termostato_max_duration_boost
@@ -1088,7 +1207,7 @@ cards:
         minmax: 'off'
         name: 'off'
         value: 'off'
-      type: 'custom:bar-card'
+      type: custom:bar-card
   - type: conditional
     conditions:
       - entity: sensor.smarther_nome_termostato_max_duration_boost
@@ -1139,7 +1258,7 @@ cards:
         minmax: 'off'
         name: 'off'
         value: 'off'
-      type: 'custom:bar-card'
+      type: custom:bar-card
   - type: conditional
     conditions:
       - entity: sensor.smarther_nome_termostato_max_duration_boost
@@ -1190,8 +1309,8 @@ cards:
         minmax: 'off'
         name: 'off'
         value: 'off'
-      type: 'custom:bar-card'
-  - type: 'custom:stack-in-card'
+      type: custom:bar-card
+  - type: custom:stack-in-card
     style: |
       ha-card {
         margin-top: -4px !important;
@@ -1202,7 +1321,7 @@ cards:
         margin-left: 2px !important;
       }
     cards:
-      - type: 'custom:layout-card'
+      - type: custom:layout-card
         layout_type: grid
         layout_options:
           grid-template-columns: 90px 30px
@@ -1229,7 +1348,7 @@ cards:
             state:
               - value: 0.1
                 color: var(--disabled-text-color)
-                icon: 'mdi:play-speed'
+                icon: mdi:play-speed
                 name: |
                   [[[
                     if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
@@ -1239,21 +1358,21 @@ cards:
                       }
                   ]]]
               - value: 30
-                color: 'rgb(255, 153, 153)'
-                icon: 'mdi:play-speed'
+                color: rgb(255, 153, 153)
+                icon: mdi:play-speed
                 name: BOOST 30
               - value: 60
-                color: 'rgb(255, 102, 102)'
-                icon: 'mdi:play-speed'
+                color: rgb(255, 102, 102)
+                icon: mdi:play-speed
                 name: BOOST 60
               - value: 90
-                color: 'rgb(255, 80, 80)'
-                icon: 'mdi:play-speed'
+                color: rgb(255, 80, 80)
+                icon: mdi:play-speed
                 name: BOOST 90
             styles:
               card:
                 - font-size: 10px
-            type: 'custom:button-card'
+            type: custom:button-card
           - color: auto
             style: |
               ha-card {
@@ -1268,10 +1387,10 @@ cards:
             state:
               - color: '#ff0000'
                 value: 'off'
-                icon: 'mdi:close-circle'
+                icon: mdi:close-circle
               - color: var(--disabled-text-color)
                 value: 'on'
-                icon: 'mdi:close-circle'
+                icon: mdi:close-circle
             show_name: false
             name: BOOST OFF
             tap_action:
@@ -1281,8 +1400,8 @@ cards:
             styles:
               card:
                 - font-size: 10px
-            type: 'custom:button-card'
-      - color: 'rgb(255, 204, 153)'
+            type: custom:button-card
+      - color: rgb(255, 204, 153)
         style: |
           ha-card {
             margin: -5px 0px 0px 0px;         
@@ -1297,7 +1416,7 @@ cards:
                 return 'TEMPERATURA';
               }
           ]]]
-        icon: 'mdi:home-thermometer'
+        icon: mdi:home-thermometer
         size: 40px
         styles:
           card:
@@ -1307,8 +1426,8 @@ cards:
           service: input_boolean.turn_on
           service_data:
             entity_id: input_boolean.temperatura_smarther_nome_termostato
-        type: 'custom:button-card'
-      - color: 'rgb(102, 153, 255)'
+        type: custom:button-card
+      - color: rgb(102, 153, 255)
         style: |
           ha-card {
             margin: 0px 0px 0px 0px;
@@ -1323,7 +1442,7 @@ cards:
                 return 'UMIDITA\'';
               }
           ]]]
-        icon: 'mdi:water-percent'
+        icon: mdi:water-percent
         size: 40px
         styles:
           card:
@@ -1333,7 +1452,7 @@ cards:
           service: input_boolean.turn_on
           service_data:
             entity_id: input_boolean.umidita_smarther_nome_termostato
-        type: 'custom:button-card'
+        type: custom:button-card
       - color: auto
         style: |
           ha-card {
@@ -1354,14 +1473,14 @@ cards:
         show_name: false
         show_icon: tre
         size: 35px
-        icon: 'mdi:calendar-clock'
+        icon: mdi:calendar-clock
         styles:
           card:
             - font-size: 10px
           icon:
             - color: var(--disabled-text-color)
-        type: 'custom:button-card'
-      - type: 'custom:layout-card'
+        type: custom:button-card
+      - type: custom:layout-card
         layout_type: grid
         layout_options:
           grid-template-columns: 90px 30px
@@ -1380,7 +1499,7 @@ cards:
             state:
               - color: green
                 value: 'off'
-                icon: 'mdi:information-outline'
+                icon: mdi:information-outline
                 name: |
                   [[[
                     if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
@@ -1391,7 +1510,7 @@ cards:
                   ]]]
               - color: green
                 value: 'on'
-                icon: 'mdi:thermostat'
+                icon: mdi:thermostat
                 name: |
                   [[[
                     if (states['input_select.smarther_nome_termostato_language'].state == 'EN') { 
@@ -1410,7 +1529,7 @@ cards:
             styles:
               card:
                 - font-size: 10px
-            type: 'custom:button-card'
+            type: custom:button-card
           - color: auto
             style: |
               ha-card {
@@ -1426,17 +1545,17 @@ cards:
               - color: '#ff0000'
                 operator: '>='
                 value: 5
-                icon: 'mdi:alert'
+                icon: mdi:alert
               - color: green
                 operator: <=
                 value: 4
-                icon: 'mdi:check-bold'
+                icon: mdi:check-bold
             show_name: false
             size: 40px
             styles:
               card:
                 - font-size: 10px
-            type: 'custom:button-card'
+            type: custom:button-card
 layout_type: grid
 layout_options:
   grid-template-columns: 255px 20px 100px
