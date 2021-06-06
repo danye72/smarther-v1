@@ -655,6 +655,7 @@ cards:
                 entities:
                   - input_select.smarther_nome_termostato_language
                   - sensor.smarther_current_release
+                  - sensor.smarther_latest_release
                 card:
                   confirmation:
                     text: >-
@@ -708,6 +709,8 @@ cards:
                 entities:
                   - input_select.smarther_nome_termostato_language
                   - sensor.smarther_current_release
+                  - sensor.smarther_latest_release
+                  - input_boolean.smarther_update_available
                 card:
                   confirmation:
                     text: >-
@@ -1407,33 +1410,34 @@ cards:
               card:
                 - font-size: 10px
             type: custom:button-card
-          - color: auto
-            style: |
-              ha-card {
-                margin-left: -25px;
-                margin-top: 0px;
-                height: 20px !important;
-                width: 15px !important;
-                box-shadow: 0px 0px;
-                background-color: rgba(0, 0, 0, 0.0);
-                transition: none;
-              }
-            entity: sensor.smarther_webhookdelay_nome_termostato
-            state:
-              - color: '#ff0000'
-                operator: '>='
-                value: 5
-                icon: mdi:alert
-              - color: green
-                operator: <=
-                value: 4
-                icon: mdi:check-bold
-            show_name: false
-            size: 40px
-            styles:
-              card:
-                - font-size: 10px
-            type: custom:button-card
+          - type: custom:config-template-card
+            variables:
+              - states['sensor.smarther_webhookdelay_nome_termostato'].state
+              - states['input_boolean.smarther_update_available'].state
+            entities:
+              - sensor.smarther_webhookdelay_nome_termostato
+              - input_boolean.smarther_update_available
+            card:
+              color: '${ vars[0] >= ''5'' ? ''red'' : vars[1] === ''on'' ? ''red'' : ''green'' }'
+              style: |
+                ha-card {
+                  margin-left: -25px;
+                  margin-top: 0px;
+                  height: 20px !important;
+                  width: 15px !important;
+                  box-shadow: 0px 0px;
+                  background-color: rgba(0, 0, 0, 0.0);
+                  transition: none;
+                }
+              icon: >-
+                ${ vars[0] >= '5' ? 'mdi:alert' : vars[1] === 'on' ? 'mdi:alert'
+                : 'mdi:check-bold' }
+              show_name: false
+              size: 40px
+              styles:
+                card:
+                  - font-size: 10px
+              type: custom:button-card
 layout_type: grid
 layout_options:
   grid-template-columns: 255px 20px 100px
