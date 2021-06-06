@@ -32,6 +32,7 @@ cards:
           'heating') %} #ff7b00 !important {% endif %};
           --off-color: {% if is_state('sensor.smarther_nome_termostato_activity_type',
           'off') %} #ff0000 !important {% endif %};
+          transition: none;
         }
       type: thermostat
       name: nome_termostato
@@ -56,6 +57,7 @@ cards:
             margin-left: -8px !important;
             width: 265px !important;
             height: 280px !important;
+            transition: none;
           }
         graph_span: 24h
         header:
@@ -154,6 +156,7 @@ cards:
             margin-left: -8px !important;
             width: 265px !important;
             height: 280px !important;
+            transition: none;
           }
         graph_span: 24h
         header:
@@ -240,6 +243,7 @@ cards:
         ha-card {
           width: 255px !important;
           height: 280px !important;
+          transition: none;
         }
       gridcols: 267px
       gridrows: 30px 27px 25px 27px 25px 27px 25px 27px 59px
@@ -269,6 +273,7 @@ cards:
                   font-weight: bold;
                   border-radius: 20px 0px 0px 0px!important;
                   margin-left: -24px !important;
+                  transition: none;
                 }
                 ha-markdown.no-header {
                   padding-top: 10px !important;
@@ -286,6 +291,7 @@ cards:
                   border-radius: 0px 0px 0px 0px!important;
                   margin-left: -69px !important;
                   padding-top: 10px !important;
+                  transition: none;
                 }
                 ha-icon {
                  color: green !important;
@@ -330,6 +336,7 @@ cards:
               font-weight: bold;
               border-radius: 0px !important;
               margin-left: -16px !important;
+              transition: none;
             }
             ha-markdown.no-header {
               padding-top: 5px !important;
@@ -370,6 +377,7 @@ cards:
                     border-radius: 0px !important;
                     margin-left: -24px !important;
                     padding-right: 5px !important;
+                    transition: none;
                   }
                   ha-icon {
                    color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
@@ -425,6 +433,7 @@ cards:
                     width: 100px !important;         
                     box-shadow: 0px 0px;
                     border-radius: 0px !important;
+                    transition: none;
                   }
                   ha-icon {
                    color: green  
@@ -463,6 +472,7 @@ cards:
               font-weight: bold;
               border-radius: 0px !important;
               margin-left: -16px !important;
+              transition: none;
             }
             ha-markdown.no-header {
               padding-top: 5px !important;
@@ -496,7 +506,7 @@ cards:
                 #border-style: solid;
                 border-radius: 0px !important;
                 margin-left: -16px !important;
-
+                transition: none;
               }
               ha-icon {
                color: {% if is_state('automation.smarther_nome_termostato_update', 'on') %} green !important {% else %} red !important {% endif %};  
@@ -550,6 +560,7 @@ cards:
               font-weight: bold;
               border-radius: 0px !important;
               margin-left: -16px !important;
+              transition: none;
             }
             ha-markdown.no-header {
               padding-top: 5px !important;
@@ -589,6 +600,7 @@ cards:
                     border-radius: 0px !important;
                     margin-left: -24px !important;
                     padding-right: 5px !important;
+                    transition: none; 
                   }
                   ha-icon {
                    color: {% if is_state('automation.smarther_webhook_update', 'on') %} green !important {% else %} red!important {% endif %};  
@@ -657,6 +669,7 @@ cards:
                       width: 133px !important;         
                       box-shadow: 0px 0px;
                       border-radius: 0px !important;
+                      transition: none;
                     }
                     ha-icon {
                      color: green  
@@ -712,6 +725,7 @@ cards:
                       width: 133px !important;         
                       box-shadow: 0px 0px;
                       border-radius: 0px !important;
+                      transition: none;
                     }
                     ha-icon {
                      color: red !important;
@@ -766,6 +780,7 @@ cards:
                   font-weight: bold;
                   border-radius: 0px 0px 0px 0px!important;
                   margin-left: -24px !important;
+                  transition: none;
                 }
                 ha-markdown.no-header {
                   padding-top: 5px !important;
@@ -783,6 +798,7 @@ cards:
                   font-weight: bold;
                   border-radius: 0px 0px 0px 0px!important;
                   margin-left: -69px !important;
+                  transition: none;
                 }
                 ha-icon {
                  color: green !important;
@@ -829,6 +845,7 @@ cards:
                 font-weight: bold;
                 border-radius: 0px 0px 0px 20px!important;
                 margin-left: -16px !important;
+                transition: none;
               }
               .apexcharts-canvas {
                 position: absolute !important;
@@ -931,6 +948,7 @@ cards:
             margin-left: -8px !important;
             width: 265px !important;
             height: 280px !important;
+            transition: none;
           }
         graph_span: 24h
         header:
@@ -1027,6 +1045,7 @@ cards:
             margin-left: -8px !important;
             width: 265px !important;
             height: 280px !important;
+            transition: none;
           }
         graph_span: 7day
         header:
@@ -1106,10 +1125,11 @@ cards:
                 tickAmount: dataPoints
               datetimeFormatter:
                 hour: h
-  - type: conditional
-    conditions:
-      - entity: sensor.smarther_boost_type_nome_termostato
-        state: '0'
+  - type: custom:config-template-card
+    variables:
+      - states['sensor.smarther_boost_type_nome_termostato'].state
+    entities:
+      - counter.smarther_nome_termostato_boost_remaining
     card:
       style: |
         ha-card {
@@ -1119,15 +1139,15 @@ cards:
           border-radius: 0px !important;
           margin-left: 2px !important;
           margin-top: -4px !important;
-          }
+          transition: none;
+        }
         bar-card-backgroundbar {
          border-radius: 2.5px;
          width: 10px;
          height: 250px;
          margin-left: -10px;
          box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
+         transition: none;
         }
         bar-card-currentbar {
          border-radius: 2.5px;
@@ -1135,8 +1155,7 @@ cards:
          height: 250px;
          margin-left: -10px;
          box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
+         transition: none;
         }
       animation:
         state: 'on'
@@ -1146,162 +1165,13 @@ cards:
         - entity: counter.smarther_nome_termostato_boost_remaining
           name: BOOST
       height: 10px
-      color: var(--disabled-text-color)
+      color: >-
+        ${vars[0] === '30' ? 'red' : vars[0] === '60' ? 'red' : vars[0] === '90'
+        ? 'red' : 'grey'}
       limit_value: true
-      max: 0
-      min: '0'
-      positions:
-        icon: 'off'
-        indicator: 'off'
-        minmax: 'off'
-        name: 'off'
-        value: 'off'
-      type: custom:bar-card
-  - type: conditional
-    conditions:
-      - entity: sensor.smarther_nome_termostato_max_duration_boost
-        state: '1800'
-    card:
-      style: |
-        ha-card {
-         box-shadow: none;
-          width: 20px;
-          height: 280px;
-          border-radius: 0px !important;
-          margin-left: 2px !important;
-          margin-top: -4px !important;
-        }
-        bar-card-backgroundbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-        bar-card-currentbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-      animation:
-        state: 'on'
-      columns: '5'
-      direction: up
-      entities:
-        - entity: counter.smarther_nome_termostato_boost_remaining
-          name: BOOST
-      height: 10px
-      color: var(--disabled-text-color)
-      limit_value: true
-      max: 1800
-      min: '0'
-      positions:
-        icon: 'off'
-        indicator: 'off'
-        minmax: 'off'
-        name: 'off'
-        value: 'off'
-      type: custom:bar-card
-  - type: conditional
-    conditions:
-      - entity: sensor.smarther_nome_termostato_max_duration_boost
-        state: '3600'
-    card:
-      style: |
-        ha-card {
-         box-shadow: none;
-          width: 20px;
-          height: 280px;
-          border-radius: 0px !important;
-          margin-left: 2px !important;
-          margin-top: -4px !important;
-        }
-        bar-card-backgroundbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-        bar-card-currentbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-      animation:
-        state: 'on'
-      columns: '5'
-      direction: up
-      entities:
-        - entity: counter.smarther_nome_termostato_boost_remaining
-          name: BOOST
-      height: 10px
-      color: var(--disabled-text-color)
-      limit_value: true
-      max: 3600
-      min: '0'
-      positions:
-        icon: 'off'
-        indicator: 'off'
-        minmax: 'off'
-        name: 'off'
-        value: 'off'
-      type: custom:bar-card
-  - type: conditional
-    conditions:
-      - entity: sensor.smarther_nome_termostato_max_duration_boost
-        state: '5400'
-    card:
-      style: |
-        ha-card {
-         box-shadow: none;
-          width: 20px;
-          height: 280px;
-          border-radius: 0px !important;
-          margin-left: 2px !important;
-          margin-top: -4px !important;
-        }
-        bar-card-backgroundbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-        bar-card-currentbar {
-         border-radius: 2.5px;
-         width: 10px;
-         height: 250px;
-         margin-left: -10px;
-         box-shadow: none;
-         --bar-color: {% if not is_state('sensor.smarther_boost_type_nome_termostato',
-          '0') %} red !important {% endif %};
-        }
-      animation:
-        state: 'on'
-      columns: '5'
-      direction: up
-      entities:
-        - entity: counter.smarther_nome_termostato_boost_remaining
-          name: BOOST
-      height: 10px
-      color: var(--disabled-text-color)
-      limit_value: true
-      max: 5400
+      max: >-
+        ${vars[0] === '30' ? '1800' : vars[0] === '60' ? '3600' : vars[0] ===
+        '90' ? '5400' : '0'}
       min: '0'
       positions:
         icon: 'off'
@@ -1319,6 +1189,7 @@ cards:
         box-shadow: 0px 0px;
         border-radius: 0px 20px 20px 0px!important;
         margin-left: 2px !important;
+        transition: none;
       }
     cards:
       - type: custom:layout-card
@@ -1334,7 +1205,8 @@ cards:
                 height: 50px !important;
                 box-shadow: 0px 0px;
                 border-radius: 0px !important;
-                background-color: rgba(0, 0, 0, 0.0)
+                background-color: rgba(0, 0, 0, 0.0);
+                transition: none;
               }
             entity: input_select.smarther_nome_termostato_boost_mode
             name: BOOST
@@ -1381,7 +1253,8 @@ cards:
                 height: 20px !important;
                 width: 15px !important;
                 box-shadow: 0px 0px;
-                background-color: rgba(0, 0, 0, 0.0)
+                background-color: rgba(0, 0, 0, 0.0);
+                transition: none;
               }
             entity: input_boolean.smarther_nome_termostato_boost_state
             state:
@@ -1407,6 +1280,7 @@ cards:
             margin: -5px 0px 0px 0px;         
             height: 50px !important;
             box-shadow: 0px 0px;
+            transition: none;
           }
         name: |
           [[[
@@ -1433,6 +1307,7 @@ cards:
             margin: 0px 0px 0px 0px;
             height: 50px !important;
             box-shadow: 0px 0px;
+            transition: none;
           }
         name: |
           [[[
@@ -1461,6 +1336,7 @@ cards:
             #width: 80px !important;
             height: 50px !important;
             box-shadow: 0px 0px;
+            transition: none;
           }
         entity: input_select.smarther_nome_termostato_programmi
         name: PROGRAMMI
@@ -1493,7 +1369,8 @@ cards:
                 height: 50px !important;
                 box-shadow: 0px 0px;
                 border-radius: 0px !important;
-                background-color: rgba(0, 0, 0, 0.0)
+                background-color: rgba(0, 0, 0, 0.0);
+                transition: none;
               }
             entity: input_boolean.smarther_nome_termostato_info
             state:
@@ -1538,7 +1415,8 @@ cards:
                 height: 20px !important;
                 width: 15px !important;
                 box-shadow: 0px 0px;
-                background-color: rgba(0, 0, 0, 0.0)
+                background-color: rgba(0, 0, 0, 0.0);
+                transition: none;
               }
             entity: sensor.smarther_webhookdelay_nome_termostato
             state:
