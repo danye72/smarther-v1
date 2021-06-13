@@ -643,7 +643,7 @@ cards:
                 type: custom:button-card
             - type: conditional
               conditions:
-                - entity: input_boolean.smarther_update_available
+                - entity: binary_sensor.smarther_updater
                   state: 'off'
               card:
                 type: custom:config-template-card
@@ -696,7 +696,7 @@ cards:
                   type: custom:button-card
             - type: conditional
               conditions:
-                - entity: input_boolean.smarther_update_available
+                - entity: binary_sensor.smarther_updater
                   state: 'on'
               card:
                 type: custom:config-template-card
@@ -705,12 +705,12 @@ cards:
                   - states['sensor.smarther_current_release'].state
                   - states['sensor.smarther_latest_release'].state
                   - states['sensor.smarther_latest_release'].attributes.body
-                  - states['input_boolean.smarther_update_available'].state
+                  - states['binary_sensor.smarther_updater'].state
                 entities:
                   - input_select.smarther_nome_termostato_language
                   - sensor.smarther_current_release
                   - sensor.smarther_latest_release
-                  - input_boolean.smarther_update_available
+                  - binary_sensor.smarther_updater
                 card:
                   confirmation:
                     text: >-
@@ -746,7 +746,7 @@ cards:
                   icon: mdi:alert
                   name: >-
                     ${ vars[0] === 'EN' ? 'UPDATE TO ' + vars[2] : vars[0] ===
-                    'IT' ? 'AGGIORNA A ' + vars[2] : 'no language'}
+                    'IT' ? 'AGG. A ' + vars[2] : 'no language'}
                   tap_action:
                     action: call-service
                     service: script.turn_on
@@ -1413,10 +1413,10 @@ cards:
           - type: custom:config-template-card
             variables:
               - states['sensor.smarther_webhookdelay_nome_termostato'].state
-              - states['input_boolean.smarther_update_available'].state
+              - states['binary_sensor.smarther_updater'].state
             entities:
               - sensor.smarther_webhookdelay_nome_termostato
-              - input_boolean.smarther_update_available
+              - binary_sensor.smarther_updater
             card:
               color: '${ vars[0] >= ''5'' ? ''red'' : vars[1] === ''on'' ? ''red'' : ''green'' }'
               style: |
