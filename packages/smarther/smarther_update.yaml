@@ -1,9 +1,5 @@
   #### INPUT BOOLEAN ####
 
-input_boolean:
-  smarther_update_available:
-
-
 shell_command:
   smarther_update: "sh /config/smarther/update"
 
@@ -52,37 +48,3 @@ binary_sensor:
         attribute_templates:
           current_version: "{{ states('sensor.smarther_current_release') }}"
           latest_version: "{{ states('sensor.smarther_latest_release') }}"
-
-
-    
-#########################################################
-#                                                       #
-#                    AUTOMATION                         #
-#                                                       #
-#########################################################
-
-automation:
-  - id: 'smarther_update_avaiable'
-    alias: smarther_update_avaiable
-    description: ''
-    trigger:
-    - platform: template
-      value_template: "{{ states('sensor.smarther_latest_release') != states('sensor.smarther_current_release') }}"
-    action:
-    - service: input_boolean.turn_on
-      target:
-        entity_id: input_boolean.smarther_update_available
-    mode: single
-
-
-  - id: 'smarther_update_not_avaiable'
-    alias: smarther_update_not_avaiable
-    description: ''
-    trigger:
-    - platform: template
-      value_template: "{{ states('sensor.smarther_latest_release') == states('sensor.smarther_current_release') }}"
-    action:
-    - service: input_boolean.turn_off
-      target:
-        entity_id: input_boolean.smarther_update_available
-    mode: single
