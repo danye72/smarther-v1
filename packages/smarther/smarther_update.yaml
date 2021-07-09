@@ -1,35 +1,36 @@
-  #### INPUT BOOLEAN ####
-
+#########################################################
+#                                                       #
+#                       SCRIPT                          #
+#                                                       #
+#########################################################
 shell_command:
-  smarther_update: "sh /config/smarther/update"
+  smarther_update: __update_cmd__
 
 script:
   update_from_smarther_github_repo:
     alias: Update smarther integration from GitHub repository
     sequence:
-    - service: shell_command.smarther_update
+      - service: shell_command.smarther_update
+      - service: homeassistant.update_entity
+        entity_id: sensor.smarther_current_release, sensor.smarther_latest_release, binary_sensor.smarther_updater
 
-# Example configuration.yaml entry
-rest:
-  - scan_interval: 10800
-    resource: https://api.github.com/repos/__github_repo__/releases/latest
-    sensor:
-      - name: "Smarther latest release"
-        value_template: "{{ value_json.tag_name }}"
-        json_attributes:
-          - "html_url"
-          - "name"
-          - "draft"
-          - "prerelease"
-          - "published_at"
-          - "body"
+  smarther_release_sensors_update:
+    alias: Update smarther release sensors manually
+    sequence:
+      - service: homeassistant.update_entity
+        entity_id: sensor.smarther_current_release, sensor.smarther_latest_release, binary_sensor.smarther_updater
 
+#########################################################
+#                                                       #
+#                        SENSOR                         #
+#                                                       #
+#########################################################
 sensor:
   - platform: command_line
     name: "Smarther current release"
     command: cat /config/smarther/.smarther_version
-    scan_interval: 60
-    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 10800
+    value_template: "{{ value_json.tag_name }}"
     json_attributes:
       - "html_url"
       - "name"
@@ -38,6 +39,24 @@ sensor:
       - "published_at"
       - "body"
 
+  - platform: command_line
+    name: "Smarther latest release"
+    command: __latest_release_cmd__
+    scan_interval: 3600
+    value_template: "{{ value_json.tag_name }}"
+    json_attributes:
+      - "html_url"
+      - "name"
+      - "draft"
+      - "prerelease"
+      - "published_at"
+      - "body"
+
+#########################################################
+#                                                       #
+#                    BINARY SENSOR                      #
+#                                                       #
+#########################################################
 binary_sensor:
   - platform: template
     sensors:
