@@ -67,13 +67,14 @@ Once you completed app registration phase having received  **Client ID** and **C
 These are the variables to add in your secrets file
 
 | Secret key                          | How to get                        | Format
-|-------------------------------------|-----------------------------------|----------
-|`bticino_thermostat_client_id`       | received via email                | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-|`bticino_thermostat_client_secret`   | received via email                | **********************************
-|`bticino_thermostat_subscription_key`| primary key from Legrand subscription   | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-|`bticino_thermostat_code`            | get in browser from the previous step | *[very long string]*
-|`bticino_thermostat_name`            | name of the thermostat in BTicino App  | string *[comma separated list in case of multiple thermostat, uppercases and spaces are allowed]*
-|`domain`                             | public Home Assistant URL         | string
+|-------------------------------------|-----------------------------------|-
+|`bticino_thermostat_client_id` | received via email | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+|`bticino_thermostat_client_secret` | received via email | **********************************
+|`bticino_thermostat_subscription_key` | primary key from Legrand subscription | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+|`bticino_thermostat_code` | get in browser from the previous step | *[very long string]*
+|`bticino_thermostat_name` | name of the thermostat in BTicino App | string *[comma separated list in case of multiple thermostat, uppercases and spaces are allowed]*
+|`domain` | public Home Assistant URL | string
+|`bticino_thermostat_prerelease` | optional | boolean
 
 > **Note**: In case you Home Assistant server is placed at your home, make sure to have port forwarding properly configured in your home modem/router in order that public Home Assistant URL address is be reachable from Legrand!
 
@@ -88,6 +89,7 @@ bticino_thermostat_subscription_key: 5bc08c57bf24458ab8c155fc37cf955c
 bticino_thermostat_code: [very long string]
 bticino_thermostat_name: mydevice1, My Device2
 domain: mydomain.duckdns.com [specify the port if is not standard 443]
+bticino_thermostat_prerelease: false
 ```
 
 ### 2.3. Allow HA to include packages on configuration file
@@ -114,17 +116,27 @@ homeassistant:
 > Next updates will be done by Home Assistant script, no need to clone and run install command every time, just the first time.
 > 
 ### 3.1. Open a terminal in Home Assistant
-Open a shell in Home Assistant. Make sure you are write permission on `/config folder`.
+Open a shell in Home Assistant.
 
 - for HASSOS or HA supervised installation you can use addon like "*SSH & Web Terminal*"
-- for HA core you can exec into the docker container (usually with command like docker exec -it "container name" /bin/bash)
+- for HA core you can exec into the docker container (usually with command like `docker exec -it <container name> /bin/bash` to get a bash shell)
 
 ### 3.2. GitHub download latest released version & Run install command 
+
+For  **STABLE** version (**GitHub Release**)
 ```
 gh_repo="danye72/smarther-v1" \
 && ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases/latest" | jq -r ".tag_name") \
 && curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s
 ```
+
+For **INCUBATOR** version (**GitHub Prerelease**)
+```
+gh_repo="danye72/smarther-v1" \
+&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.prerelease)) | first" | jq -r ".tag_name") \
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --force_prerelease
+```
+
 ![1install](https://user-images.githubusercontent.com/36844281/120300089-e620f000-c2cb-11eb-923b-c8a9c560d55e.PNG)
 ![1install-end](https://user-images.githubusercontent.com/36844281/120300094-e7eab380-c2cb-11eb-992c-a1725d2455ce.PNG)
 
@@ -145,7 +157,7 @@ Install the following Frontends with **HACS**:
  - config-template-card
 
 ### 4.2. Get Lovelace Card for your thermostat
-Copy the manual card code from the generated file placed in `/config/smarther/TERMOSTATO_CARD_thermostat_name.txt`
+Copy the manual card code from the generated file/files placed in `/config/smarther/TERMOSTATO_CARD_thermostat_name.txt`
 
 ### 4.3. Create manual card
 Create a manual card on your favorite Home Assistant view, and past-in the upper mentioned card code.
@@ -154,6 +166,4 @@ Create a manual card on your favorite Home Assistant view, and past-in the upper
 Once you completed all the installation and configurations steps, You have *BTicino Smarther integration for Home Assistant* up and running
 
 ## 5. Update
-In order to get and install future updates, you can just run the script in Home Assistant called **script.update_from_smarther_github_repo**
-
-> This part will be part of the card in the next release
+In order to get and install future updates, you can just run the script in Home Assistant called **script.update_from_smarther_github_repo**, already integrated as button in to the lovelace card.

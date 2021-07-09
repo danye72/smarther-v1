@@ -1,17 +1,13 @@
 #!/bin/sh
 
-#SHOULD_INITIALIZE=0
 path_dir="/config/smarther"
 github_repo="danye72/smarther-v1"
+prerelease="false"
 
 # Loop through arguments and process them
 for arg in "$@"
 do
     case $arg in
-        #-i|--initialize)
-        #SHOULD_INITIALIZE=1
-        #shift # Remove --initialize from processing
-        #;;
         #-p=*|--path=*)
         #path_dir="${arg#*=}"
         #shift # Remove --path= from processing
@@ -26,6 +22,10 @@ do
         shift # Remove argument name from processing
         shift # Remove argument value from processing
         ;;
+        -fpr|--force_prerelease)
+        prerelease="true"
+        shift # Remove argument name from processing
+        ;;
         *)
     esac
 done
@@ -33,6 +33,23 @@ done
 log="$path_dir/update.log"
 temp_dir="$path_dir/.temp"
 error=false
+
+get_secret() {
+    if [ $# -eq 0 ] ; then
+        echo 'Usage: get_secret secret_key'
+        exit 0
+    fi
+    cat /config/secrets.yaml |
+    grep ^$1:                |
+    sed -e 's/\s*:\s*/:/g'   | # remove spaces before and after :
+    sed -e 's/\s*,\s*/,/g'   | # remove spaces before and after ,
+    sed -e 's/"//g'          | # remove all "
+    sed -e "s/'//g"          | # remove all '
+    sed -e 's/ *$//'         | # remove spaces at the end of line
+    sed -e 's/ /_/g'         | # replace spaces with _
+    grep -Eo ':.*'           | # remove :
+    sed -e 's/://'
+}
 
 if [ ! -d "$path_dir" ]; then
     mkdir -p $path_dir
@@ -51,11 +68,33 @@ fi
 #| sed -E 's/.*"([^"]+)".*/\1/' \
 #| xargs -I {} wget -O $temp_dir/smarther.tar.gz "https://api.github.com/repos/$github_repo/tarball/"{}
 
-latest_release=$(curl -ksL "https://api.github.com/repos/$github_repo/releases/latest")
-if [ ! -z "$latest_release" ]; then
-    wget -O $temp_dir/smarther.tar.gz $(echo $latest_release | jq -r ".tarball_url")
+if [ $prerelease = "true" ]; then
+    echo "$(date) | WARN  | Prerelease has been forced, skip getting info from secret file" >> $log
+else
+    prerelease=$(get_secret bticino_thermostat_prerelease)
+fi
+
+prerelease_tolower=$(echo "$prerelease" | awk '{print tolower($0)}')
+if [ ! -z "$prerelease_tolower" ] ; then
+    case "$prerelease_tolower" in
+        "true")
+            echo "$(date) | WARN  | Prerelease has been forced or <<bticino_thermostat_prerelease>> variable is set to true, not stable version will be installed" >> $log
+            release_json=$(curl --silent "https://api.github.com/repos/$github_repo/releases" | jq -r 'map(select(.prerelease)) | first')
+            ;;
+        *)
+            echo "$(date) | INFO  | $prerelease is not a valid value for <<bticino_thermostat_prerelease>> variable, check the variable into the secret.yaml file, the stable version will be installed" >> $log
+            release_json=$(curl -ksL "https://api.github.com/repos/$github_repo/releases/latest")
+            ;;
+    esac
+else
+    echo "$(date) | INFO  | Optional <<bticino_thermostat_prerelease>> variable is not set, the stable version will be installed" >> $log
+    release_json=$(curl -ksL "https://api.github.com/repos/$github_repo/releases/latest")
+fi
+
+if [ ! -z "$release_json" ]; then
+    wget -O $temp_dir/smarther.tar.gz $(echo $release_json | jq -r ".tarball_url")
     if [ ! -f "$temp_dir/smarther.tar.gz" ]; then
-        echo "$(date) | ERROR | Something went wrong downloading latest relese: $(echo $latest_release | jq -r ".tarball_url")" >> $log
+        echo "$(date) | ERROR | Something went wrong downloading latest relese: $(echo $release_json | jq -r ".tarball_url")" >> $log
         error=true
     fi
     tar -xvf $temp_dir/smarther.tar.gz --exclude="*/.*/*" --strip 1 --directory $temp_dir
@@ -68,16 +107,18 @@ if [ ! -z "$latest_release" ]; then
         error=true
     fi  
 else   
-    echo "$(date) | ERROR | Something went wrong downloading latest relese info: https://api.github.com/repos/$github_repo/releases/latest" >> $log
+    echo "$(date) | ERROR | Something went wrong downloading relese info" >> $log
     error=true
 fi
 
 if [ $error = false ]; then
-    echo $latest_release | python -m json.tool > $temp_dir/.smarther_version
+    #wget -O $temp_dir/smarther_version "https://api.github.com/repos/$github_repo/releases/latest"
+    # https://stackoverflow.com/questions/352098/how-can-i-pretty-print-json-in-a-shell-script
+    echo $release_json | python -m json.tool > $temp_dir/.smarther_version
     echo "$(date) | INFO  | Launch install script" >> $log
     chmod +x $temp_dir/script/update
     chmod +x $temp_dir/script/install
-    sh -x $temp_dir/script/install --path $path_dir --repo $github_repo >> $log
+    sh -x $temp_dir/script/install --path $path_dir --repo $github_repo --prerelease $prerelease >> $log
 else
     echo "$(date) | ERROR | Something went wrong :( Checks the log file" >> $log
     exit 1

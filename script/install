@@ -1,17 +1,13 @@
 #!/bin/sh
 
-#SHOULD_INITIALIZE=0
 path_dir="/config/smarther"
 github_repo="danye72/smarther-v1"
+prerelease="false"
 
 # Loop through arguments and process them
 for arg in "$@"
 do
    case $arg in
-      #-i|--initialize)
-      #SHOULD_INITIALIZE=1
-      #shift # Remove --initialize from processing
-      #;;
       #-p=*|--path=*)
       #path_dir="${arg#*=}"
       #shift # Remove --path= from processing
@@ -23,6 +19,11 @@ do
       ;;
       -r|--repo)
       github_repo="$2"
+      shift # Remove argument name from processing
+      shift # Remove argument value from processing
+      ;;
+      -pr|--prerelease)
+      prerelease="$2"
       shift # Remove argument name from processing
       shift # Remove argument value from processing
       ;;
@@ -104,6 +105,24 @@ if ! awk '/\r$/ { exit(1) }' /config/secrets.yaml ; then
    > /config/secrets_temp.yaml
    mv /config/secrets_temp.yaml /config/secrets.yaml
 fi
+
+prerelease_tolower=$(echo "$prerelease" | awk '{print tolower($0)}')
+if [ ! -z "$prerelease_tolower" ] ; then
+   case "$prerelease_tolower" in
+      "true")
+            update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.prerelease)) | first" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
+            latest_release_cmd='curl --silent "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.prerelease)) | first"'
+            ;;
+        *)
+            update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases/latest" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
+            latest_release_cmd='curl --silent "https://api.github.com/repos/__github_repo__/releases/latest"'
+            ;;
+   esac
+else
+   update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases/latest" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
+   latest_release_cmd='curl --silent "https://api.github.com/repos/__github_repo__/releases/latest"'
+fi
+
 client_id=$(get_secret bticino_thermostat_client_id)
 client_secret=$(get_secret bticino_thermostat_client_secret)
 subscription_key=$(get_secret bticino_thermostat_subscription_key)
@@ -140,7 +159,6 @@ fi
 if [ $error = false ]; then
    echo "$(date) | INFO  | Copy files to $path_dir" >> $log
    cp $temp_dir/smarther/smarther.py $path_dir/smarther.py
-   cp $temp_dir/script/update $path_dir/update
    cp $temp_dir/.smarther_version $path_dir/.smarther_version
    
    echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
@@ -183,13 +201,22 @@ if [ $error = false ]; then
    echo "$(date) | INFO  | Saved $package_dir/smarther_webhooks.yaml" >> $log
 
    cat $temp_dir/packages/smarther/smarther_update.yaml \
+   | sed -e "s~__update_cmd__~$update_cmd"~ \
+   | sed "s~__latest_release_cmd__~$latest_release_cmd"~ \
    | sed "s~__github_repo__~$github_repo"~g \
    > $package_dir/smarther_update.yaml
    echo "$(date) | INFO  | Saved $package_dir/smarther_update.yaml" >> $log
-   
+
+   echo "$(date) | INFO  | --- CLEAN-UP ---" >> $log
+   rm -rf $temp_dir
+   update=$path_dir/update
+   if [ -f "$update" ]; then
+      rm -f $update
+   fi
+
    echo "$(date) | INFO  | --- INSTALLATION COMPLETED ---" >> $log
    echo "$(date) | INFO  | ------------------------------" >> $log
-   rm -rf $temp_dir
+
 else
    echo "$(date) | ERROR | Something went wrong :( Checks the log file!" >> $log
    exit 1
