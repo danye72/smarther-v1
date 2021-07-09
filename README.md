@@ -134,7 +134,7 @@ For **INCUBATOR** version (**GitHub Prerelease**)
 ```
 gh_repo="danye72/smarther-v1" \
 && ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.prerelease)) | first" | jq -r ".tag_name") \
-&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --force_prerelease
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --repo $gh_repo --force_prerelease
 ```
 
 ![1install](https://user-images.githubusercontent.com/36844281/120300089-e620f000-c2cb-11eb-923b-c8a9c560d55e.PNG)
