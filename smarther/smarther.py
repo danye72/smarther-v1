@@ -299,7 +299,12 @@ class Termostato:
             if "statusCode" in dati_ricevuti:
                 if dati_ricevuti["statusCode"] == 403:
                     self.dati_termostato["api"] = "ko"
-            Termostato.save_dati_termostato(self)
+
+            path = pathlib.Path(path_dir + self.nome + ".json")
+            if path.is_file():
+                Termostato.save_dati_termostato(self)
+            else:
+                Termostato.log(self,"file smarther "+ self.nome +".json non creato a causa di un errore del server!")
 
     def webhooks(self):
         Termostato.log(self, self.nome+" - webhook ricevuto")
@@ -471,16 +476,6 @@ class Termostato:
         # aggiorno i valori per homeassistant dopo averli impostati
         Termostato.valori_api(self)
         
-        
-
-
-
-
-
-
-
-
-
 
 termostato = Termostato(nome)
 if nome != "webhooks":
