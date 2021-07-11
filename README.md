@@ -133,7 +133,7 @@ gh_repo="danye72/smarther-v1" \
 For **INCUBATOR** version (**GitHub Prerelease**)
 ```
 gh_repo="danye72/smarther-v1" \
-&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.prerelease)) | first" | jq -r ".tag_name") \
+&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.draft==false)) | first" | jq -r ".tag_name") \
 && curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --repo $gh_repo --force_prerelease
 ```
 

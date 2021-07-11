@@ -110,8 +110,8 @@ prerelease_tolower=$(echo "$prerelease" | awk '{print tolower($0)}')
 if [ ! -z "$prerelease_tolower" ] ; then
    case "$prerelease_tolower" in
       "true")
-            update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.prerelease)) | first" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
-            latest_release_cmd='curl --silent "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.prerelease)) | first"'
+            update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.draft==false)) | first" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
+            latest_release_cmd='curl --silent "https://api.github.com/repos/__github_repo__/releases" | jq -r "map(select(.draft==false)) | first"'
             ;;
         *)
             update_cmd='ver=$(curl -ksL "https://api.github.com/repos/__github_repo__/releases/latest" | jq -r ".tag_name") \&\& curl -s "https://raw.githubusercontent.com/__github_repo__/$ver/script/update" | bash -s'
