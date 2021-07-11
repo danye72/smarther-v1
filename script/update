@@ -79,7 +79,7 @@ if [ ! -z "$prerelease_tolower" ] ; then
     case "$prerelease_tolower" in
         "true")
             echo "$(date) | WARN  | Prerelease has been forced or <<bticino_thermostat_prerelease>> variable is set to true, not stable version will be installed" >> $log
-            release_json=$(curl --silent "https://api.github.com/repos/$github_repo/releases" | jq -r 'map(select(.prerelease)) | first')
+            release_json=$(curl --silent "https://api.github.com/repos/$github_repo/releases" | jq -r 'map(select(.draft==false)) | first')
             ;;
         *)
             echo "$(date) | INFO  | $prerelease is not a valid value for <<bticino_thermostat_prerelease>> variable, check the variable into the secret.yaml file, the stable version will be installed" >> $log
