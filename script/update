@@ -63,10 +63,13 @@ else
     echo "$(date) | WARN  | Clean-up temporary folder $temp_dir" >> $log
 fi
 
-#curl -s "https://api.github.com/repos/$github_repo/releases/latest" \
-#| grep '"tag_name":' \
-#| sed -E 's/.*"([^"]+)".*/\1/' \
-#| xargs -I {} wget -O $temp_dir/smarther.tar.gz "https://api.github.com/repos/$github_repo/tarball/"{}
+if ! awk '/\r$/ { exit(1) }' /config/secrets.yaml ; then
+   echo "$(date) | WARN  | secrets file has at least one Windows-style line ending. It will be converted" >> $log
+   cat /config/secrets.yaml \
+   | awk '{ sub("\r$", "); print }' \
+   > /config/secrets_temp.yaml
+   mv /config/secrets_temp.yaml /config/secrets.yaml
+fi
 
 if [ $prerelease = "true" ]; then
     echo "$(date) | WARN  | Prerelease has been forced, skip getting info from secret file" >> $log
