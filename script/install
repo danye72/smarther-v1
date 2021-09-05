@@ -3,6 +3,7 @@
 path_dir="/config/smarther"
 github_repo="danye72/smarther-v1"
 prerelease="false"
+subscribe="false"
 
 # Loop through arguments and process them
 for arg in "$@"
@@ -24,6 +25,11 @@ do
       ;;
       -pr|--prerelease)
       prerelease="$2"
+      shift # Remove argument name from processing
+      shift # Remove argument value from processing
+      ;;
+      -s|--subscribe)
+      subscribe="$2"
       shift # Remove argument name from processing
       shift # Remove argument value from processing
       ;;
@@ -170,6 +176,13 @@ if [ $error = false ]; then
    | sed -e "s/__c2c_url__/https:\/\/$domain\/api\/webhook\/smarther475600"/g \
    > $path_dir/conf_smarther_temp.json
    mv $path_dir/conf_smarther_temp.json $path_dir/conf_smarther.json
+   
+   if [ $subscribe = "true" ]; then
+      echo "$(date) | WARN  | New subscribe has been forced" >> $log
+      jq 'del(.c2c)' $path_dir/conf_smarther.json \
+      > $path_dir/conf_smarther_temp.json
+      mv $path_dir/conf_smarther_temp.json $path_dir/conf_smarther.json
+   fi
    echo "$(date) | INFO  | Saved $path_dir/conf_smarther.json" >> $log
 
    entity_id_orig=$(cat $temp_dir/packages/smarther/smarther_webhooks.yaml | grep entity_id: | grep -Eo ':.*' | sed 's/://')

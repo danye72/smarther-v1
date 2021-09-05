@@ -63,7 +63,7 @@ binary_sensor:
       smarther_updater:
         friendly_name: "Smarther updater"
         value_template: "{{ states('sensor.smarther_current_release') < states('sensor.smarther_latest_release') }}"
-        device_class: moving
+        device_class: update
         attribute_templates:
           current_version: "{{ states('sensor.smarther_current_release') }}"
           latest_version: "{{ states('sensor.smarther_latest_release') }}"
