@@ -1,5 +1,6 @@
 
 
+
 # BTicino Smarther integration for Home Assistant
 
 Hi! This project is developed and maintenance by a small community of passionate people who make this solution available for free. 
@@ -126,15 +127,19 @@ Open a shell in Home Assistant.
 For  **STABLE** version (**GitHub Release**)
 ```
 gh_repo="danye72/smarther-v1" \
-&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases/latest" | jq -r ".tag_name") \
-&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/master/script/init" | bash -s -- --repo $gh_repo
 ```
 
 For **INCUBATOR** version (**GitHub Prerelease**)
 ```
 gh_repo="danye72/smarther-v1" \
-&& ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.draft==false)) | first" | jq -r ".tag_name") \
-&& curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --repo $gh_repo --force_prerelease
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/master/script/init" | bash -s -- --repo $gh_repo --prerelease
+```
+
+For new subscription request, add **--subscribe** argument
+```
+gh_repo="danye72/smarther-v1" \
+&& curl -s "https://raw.githubusercontent.com/$gh_repo/master/script/init" | bash -s -- --repo $gh_repo --subscribe
 ```
 
 ![1install](https://user-images.githubusercontent.com/36844281/120300089-e620f000-c2cb-11eb-923b-c8a9c560d55e.PNG)

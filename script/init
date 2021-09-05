@@ -1,0 +1,40 @@
+#!/bin/sh
+
+path_dir="/config/smarther"
+gh_repo="danye72/smarther-v1"
+prerelease="false"
+subscribe="false"
+
+# Loop through arguments and process them
+for arg in "$@"
+do
+   case $arg in
+      -p|--path)
+      path_dir="$2"
+      shift # Remove argument name from processing
+      shift # Remove argument value from processing
+      ;;
+      -r|--repo)
+      gh_repo="$2"
+      shift # Remove argument name from processing
+      shift # Remove argument value from processing
+      ;;
+      -pr|--prerelease)
+      prerelease="true"
+      shift # Remove argument name from processing
+      ;;
+      -s|--subscribe)
+      subscribe="true"
+      shift # Remove argument name from processing
+      ;;
+      *)
+   esac
+done
+
+if [ $prerelease = "true" ]; then
+   ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases" | jq -r "map(select(.draft==false)) | first" | jq -r ".tag_name")
+else
+   ver=$(curl -ksL "https://api.github.com/repos/$gh_repo/releases/latest" | jq -r ".tag_name")
+fi
+
+curl -s "https://raw.githubusercontent.com/$gh_repo/$ver/script/update" | bash -s -- --repo $gh_repo --force_prerelease $prerelease --subscribe $subscribe

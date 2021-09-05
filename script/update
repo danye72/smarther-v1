@@ -3,11 +3,17 @@
 path_dir="/config/smarther"
 github_repo="danye72/smarther-v1"
 prerelease="false"
+subscribe="false"
+#SHOULD_INITIALIZE=0
 
 # Loop through arguments and process them
 for arg in "$@"
 do
     case $arg in
+        #-i|--initialize)
+        #SHOULD_INITIALIZE=1
+        #shift # Remove --initialize from processing
+        #;;
         #-p=*|--path=*)
         #path_dir="${arg#*=}"
         #shift # Remove --path= from processing
@@ -23,8 +29,14 @@ do
         shift # Remove argument value from processing
         ;;
         -fpr|--force_prerelease)
-        prerelease="true"
+        prerelease="$2"
         shift # Remove argument name from processing
+        shift # Remove argument value from processing
+        ;;
+        -s|--subscribe)
+        subscribe="$2"
+        shift # Remove argument name from processing
+        shift # Remove argument value from processing
         ;;
         *)
     esac
@@ -64,11 +76,11 @@ else
 fi
 
 if ! awk '/\r$/ { exit(1) }' /config/secrets.yaml ; then
-   echo "$(date) | WARN  | secrets file has at least one Windows-style line ending. It will be converted" >> $log
-   cat /config/secrets.yaml \
-   | awk '{ sub("\r$", "); print }' \
-   > /config/secrets_temp.yaml
-   mv /config/secrets_temp.yaml /config/secrets.yaml
+    echo "$(date) | WARN  | secrets file has at least one Windows-style line ending. It will be converted" >> $log
+    cat /config/secrets.yaml \
+    | awk '{ sub("\r$", "); print }' \
+    > /config/secrets_temp.yaml
+    mv /config/secrets_temp.yaml /config/secrets.yaml
 fi
 
 if [ $prerelease = "true" ]; then
@@ -121,7 +133,7 @@ if [ $error = false ]; then
     echo "$(date) | INFO  | Launch install script" >> $log
     chmod +x $temp_dir/script/update
     chmod +x $temp_dir/script/install
-    sh -x $temp_dir/script/install --path $path_dir --repo $github_repo --prerelease $prerelease >> $log
+    sh -x $temp_dir/script/install --path $path_dir --repo $github_repo --prerelease $prerelease --subscribe $subscribe >> $log
 else
     echo "$(date) | ERROR | Something went wrong :( Checks the log file" >> $log
     exit 1
