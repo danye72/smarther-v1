@@ -84,6 +84,18 @@ if [ ! -f "$temp_dir/smarther/conf_smarther.json" ]; then
    echo "$(date) | ERROR | File $temp_dir/smarther/conf_smarther.json is missing. Check repo URL" >> $log
    error=true
 fi
+if [ ! -d "$temp_dir/lovelace" ]; then
+   echo "$(date) | ERROR | Folder $temp_dir/lovelace is missing. Check repo URL" >> $log
+   error=true
+fi
+if [ ! -f "$temp_dir/lovelace/smarther_dashboard.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/smarther_dashboard.yaml is missing. Check repo URL" >> $log
+   error=true
+fi
+if [ ! -f "$temp_dir/lovelace/thermostat_view_header.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_view_header.yaml is missing. Check repo URL" >> $log
+   error=true
+fi
 if [ ! -f "$temp_dir/packages/smarther/smarther_update.yaml" ]; then
    echo "$(date) | ERROR | File $temp_dir/packages/smarther/smarther_update.yaml is missing. Check repo URL" >> $log
    error=true
@@ -174,6 +186,13 @@ if [ $error = false ]; then
    echo "$(date) | INFO  | Copy files to $path_dir" >> $log
    cp $temp_dir/smarther/smarther.py $path_dir/smarther.py
    cp $temp_dir/.smarther_version $path_dir/.smarther_version
+
+   echo "$(date) | INFO  | Copy files to lovelace folder" >> $log
+   if [ ! -d "$path_dir/lovelace" ]; then
+      mkdir -p $path_dir/lovelace
+      echo "$(date) | WARN  | Folder $path_dir/lovelace not exist. Created" >> $log
+   fi
+   cp $temp_dir/lovelace/smarther_dashboard.yaml $path_dir/lovelace/smarther_dashboard.yaml
    
    echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
    cat $temp_dir/smarther/conf_smarther.json \
@@ -222,7 +241,7 @@ if [ $error = false ]; then
       echo "$(date) | INFO  | Saved $temp_dir/lovelace/thermostat_cards.yaml" >> $log
    done
 
-   echo "$(date) | INFO  | Create lovelace thermostats view with the cards" >> $log
+   echo "$(date) | INFO  | Create lovelace thermostat view with the cards" >> $log
    cat $temp_dir/lovelace/thermostat_view_header.yaml \
       $temp_dir/lovelace/thermostat_cards.yaml \
       > $path_dir/lovelace/thermostat_view.yaml
