@@ -1,5 +1,6 @@
 
-
+  
+  
 
 # BTicino Smarther integration for Home Assistant
 
@@ -149,9 +150,9 @@ gh_repo="danye72/smarther-v1" \
 ![validate reboot](https://user-images.githubusercontent.com/36844281/117128047-31afaf00-ad9d-11eb-9574-6e2e93b214e4.PNG)
 
 ## 4. Lovelace card
-> Coming soon: in the next releases this part will be automated!  ;)
+> The Lovelace card can be added **manually** or it possible to have new **Lovelace view** that includes one card per Thermostat can be **automatically installed and updated**.
 
-### 4.1 Card dependencies
+### 4.1 Commons steps: Card dependencies
 Install the following Frontends with **HACS**: 
  - layout-card
  - bar-card
@@ -161,11 +162,35 @@ Install the following Frontends with **HACS**:
  - card-mod
  - config-template-card
 
-### 4.2. Get Lovelace Card for your thermostat
+### 4.2. Add Lovelace card manually
+
+#### 4.2.1 Get Lovelace Card for your thermostat
 Copy the manual card code from the generated file/files placed in `/config/smarther/TERMOSTATO_CARD_thermostat_name.txt`
 
-### 4.3. Create manual card
+#### 4.2.1 Create manual card
 Create a manual card on your favorite Home Assistant view, and past-in the upper mentioned card code.
+
+### 4.3. Activate automatic installation for Lovelace card
+A dedicated dashboard will be created for Smarther Thermostat, however lovelace must be set in **yaml mode**.
+
+In the most common case, since many prefer to use the simpler **storage mode**, the latest versions of Home Assistant (> 0.107) help us thanks to the possibility of creating multiple dashboards in parallel in mixed mode.
+
+#### 4.3.1 Enable Lovelace storage mode
+So let's modify the ***configuration.yaml*** file in order to have the main dashboard in storage mode, and the one dedicated to Thermostat in yaml mode:
+
+    lovelace:
+      mode: storage
+      dashboards:
+        lovelace-smarther:
+          mode: yaml
+          title: Thermostats
+          icon: mdi:home-thermometer
+          show_in_sidebar: true
+          filename: /config/smarther/lovelace/smarther_dashboard.yaml
+
+> note:  adjust `/config/smarther` path in case you customized it
+
+The previous configuration as mentioned makes sure to use the storage mode as the main one.
 
 # Runtime
 Once you completed all the installation and configurations steps, You have *BTicino Smarther integration for Home Assistant* up and running

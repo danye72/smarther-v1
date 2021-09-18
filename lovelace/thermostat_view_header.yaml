@@ -1,0 +1,8 @@
+title: Thermostats
+path: thermostat
+icon: mdi:home-thermometer
+badges:
+  - entity: binary_sensor.smarther_updater
+  - entity: sensor.smarther_current_release
+  - entity: sensor.smarther_latest_release
+cards:

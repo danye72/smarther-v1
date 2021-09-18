@@ -104,6 +104,14 @@ if [ ! -f "$temp_dir/TERMOSTATO_CARD.txt" ]; then
    echo "$(date) | ERROR | File $temp_dir/TERMOSTATO_CARD.txt is missing. Check repo URL" >> $log
    error=true
 fi
+if [ ! -f "$temp_dir/lovelace/thermostat_view_header.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_view_header.yaml is missing. Check repo URL" >> $log
+   error=true
+fi
+if [ ! -f "$temp_dir/lovelace/smarther_dashboard.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/smarther_dashboard.yaml is missing. Check repo URL" >> $log
+   error=true
+fi
 if ! awk '/\r$/ { exit(1) }' /config/secrets.yaml ; then
    echo "$(date) | WARN  | secrets file has at least one Windows-style line ending. It will be converted" >> $log
    cat /config/secrets.yaml \
@@ -203,7 +211,22 @@ if [ $error = false ]; then
       | sed "s/nome_termostato/$thermostat_name"/g \
       > $path_dir/TERMOSTATO_CARD_$thermostat_name.txt
       echo "$(date) | INFO  | Saved $path_dir/TERMOSTATO_CARD_$thermostat_name.txt" >> $log
+
+      echo "$(date) | INFO  | Create lovelace thermostat cards" >> $log
+      cat $temp_dir/TERMOSTATO_CARD.txt \
+      | sed '1 s/^/\n/' \
+      | sed "s/nome_termostato/$thermostat_name"/g \
+      | sed "s/^/   "/g \
+      | sed "s/   type: custom:layout-card/ - type: custom:layout-card"/ \
+      >> $temp_dir/lovelace/thermostat_cards.yaml
+      echo "$(date) | INFO  | Saved $temp_dir/lovelace/thermostat_cards.yaml" >> $log
    done
+
+   echo "$(date) | INFO  | Create lovelace thermostats view with the cards" >> $log
+   cat $temp_dir/lovelace/thermostat_view_header.yaml \
+      $temp_dir/lovelace/thermostat_cards.yaml \
+      > $path_dir/lovelace/thermostat_view.yaml
+   echo "$(date) | INFO  | Saved $path_dir/lovelace/thermostat_view.yaml" >> $log
 
    echo "$(date) | INFO  | Copy smarther_webhooks.yaml" >> $log
    entity_id_target=$(echo $entity_id_target | sed 's/^,//')
