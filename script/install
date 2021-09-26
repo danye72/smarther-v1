@@ -228,7 +228,7 @@ if [ $error = false ]; then
    echo >> $path_dir/lovelace/thermostat_view.yaml
    for f in $path_dir/lovelace/thermostat_card_*.yaml; do
       echo "$(date) | INFO  | Add card $f" >> $log
-      echo "  - \!include $f" >> $path_dir/lovelace/thermostat_view.yaml
+      echo "  - !include $f" >> $path_dir/lovelace/thermostat_view.yaml
    done
 
    echo "$(date) | INFO  | Copy smarther_webhooks.yaml" >> $log
