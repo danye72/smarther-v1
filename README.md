@@ -1,4 +1,5 @@
 
+
   
   
 
@@ -165,7 +166,7 @@ Install the following Frontends with **HACS**:
 ### 4.2. Add Lovelace card manually
 
 #### 4.2.1 Get Lovelace Card for your thermostat
-Copy the manual card code from the generated file/files placed in `/config/smarther/TERMOSTATO_CARD_thermostat_name.txt`
+Copy the manual card code from the generated file/files placed in `/config/smarther/lovelace/thermostat_card_<<thermostat_name>>.yaml`
 
 #### 4.2.1 Create manual card
 Create a manual card on your favorite Home Assistant view, and past-in the upper mentioned card code.

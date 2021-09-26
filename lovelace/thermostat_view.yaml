@@ -5,4 +5,5 @@ badges:
   - entity: binary_sensor.smarther_updater
   - entity: sensor.smarther_current_release
   - entity: sensor.smarther_latest_release
+  - entity: script.smarther_release_sensors_update
 cards:
