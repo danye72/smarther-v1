@@ -88,14 +88,6 @@ if [ ! -d "$temp_dir/lovelace" ]; then
    echo "$(date) | ERROR | Folder $temp_dir/lovelace is missing. Check repo URL" >> $log
    error=true
 fi
-if [ ! -f "$temp_dir/lovelace/smarther_dashboard.yaml" ]; then
-   echo "$(date) | ERROR | File $temp_dir/lovelace/smarther_dashboard.yaml is missing. Check repo URL" >> $log
-   error=true
-fi
-if [ ! -f "$temp_dir/lovelace/thermostat_view_header.yaml" ]; then
-   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_view_header.yaml is missing. Check repo URL" >> $log
-   error=true
-fi
 if [ ! -f "$temp_dir/packages/smarther/smarther_update.yaml" ]; then
    echo "$(date) | ERROR | File $temp_dir/packages/smarther/smarther_update.yaml is missing. Check repo URL" >> $log
    error=true
@@ -112,12 +104,12 @@ if [ ! -f "$temp_dir/packages/smarther/smarther_update.yaml" ]; then
    echo "$(date) | ERROR | File $temp_dir/packages/smarther/smarther_update.yaml is missing. Check repo URL" >> $log
    error=true
 fi
-if [ ! -f "$temp_dir/TERMOSTATO_CARD.txt" ]; then
-   echo "$(date) | ERROR | File $temp_dir/TERMOSTATO_CARD.txt is missing. Check repo URL" >> $log
+if [ ! -f "$temp_dir/lovelace/thermostat_card.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_card.yaml is missing. Check repo URL" >> $log
    error=true
 fi
-if [ ! -f "$temp_dir/lovelace/thermostat_view_header.yaml" ]; then
-   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_view_header.yaml is missing. Check repo URL" >> $log
+if [ ! -f "$temp_dir/lovelace/thermostat_view.yaml" ]; then
+   echo "$(date) | ERROR | File $temp_dir/lovelace/thermostat_view.yaml is missing. Check repo URL" >> $log
    error=true
 fi
 if [ ! -f "$temp_dir/lovelace/smarther_dashboard.yaml" ]; then
@@ -192,7 +184,7 @@ if [ $error = false ]; then
       mkdir -p $path_dir/lovelace
       echo "$(date) | WARN  | Folder $path_dir/lovelace not exist. Created" >> $log
    fi
-   cp $temp_dir/lovelace/smarther_dashboard.yaml $path_dir/lovelace/smarther_dashboard.yaml
+   cp -rf $temp_dir/lovelace/* $path_dir/lovelace
    
    echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
    cat $temp_dir/smarther/conf_smarther.json \
@@ -224,28 +216,20 @@ if [ $error = false ]; then
       | sed "s/nome_termostato/$thermostat_name"/g \
       > $package_dir/smarther_$thermostat_name.yaml
       echo "$(date) | INFO  | Saved $package_dir/smarther_$thermostat_name.yaml" >> $log
-
-      echo "$(date) | INFO  | Copy TERMOSTATO_CARD.txt" >> $log
-      cat $temp_dir/TERMOSTATO_CARD.txt \
-      | sed "s/nome_termostato/$thermostat_name"/g \
-      > $path_dir/TERMOSTATO_CARD_$thermostat_name.txt
-      echo "$(date) | INFO  | Saved $path_dir/TERMOSTATO_CARD_$thermostat_name.txt" >> $log
-
+      
       echo "$(date) | INFO  | Create lovelace thermostat cards" >> $log
-      cat $temp_dir/TERMOSTATO_CARD.txt \
-      | sed '1 s/^/\n/' \
+      cat $temp_dir/lovelace/thermostat_card.yaml \
       | sed "s/nome_termostato/$thermostat_name"/g \
-      | sed "s/^/   "/g \
-      | sed "s/   type: custom:layout-card/ - type: custom:layout-card"/ \
-      >> $temp_dir/lovelace/thermostat_cards.yaml
-      echo "$(date) | INFO  | Saved $temp_dir/lovelace/thermostat_cards.yaml" >> $log
+      > $path_dir/lovelace/thermostat_card_$thermostat_name.yaml
+      echo "$(date) | INFO  | Saved $path_dir/lovelace/thermostat_card_$thermostat_name.yaml" >> $log
    done
 
    echo "$(date) | INFO  | Create lovelace thermostat view with the cards" >> $log
-   cat $temp_dir/lovelace/thermostat_view_header.yaml \
-      $temp_dir/lovelace/thermostat_cards.yaml \
-      > $path_dir/lovelace/thermostat_view.yaml
-   echo "$(date) | INFO  | Saved $path_dir/lovelace/thermostat_view.yaml" >> $log
+   echo >> $path_dir/lovelace/thermostat_view.yaml
+   for f in $path_dir/lovelace/thermostat_card_*.yaml; do
+      echo "$(date) | INFO  | Add card $f" >> $log
+      echo "  - \!include $f" >> $path_dir/lovelace/thermostat_view.yaml
+   done
 
    echo "$(date) | INFO  | Copy smarther_webhooks.yaml" >> $log
    entity_id_target=$(echo $entity_id_target | sed 's/^,//')
