@@ -184,7 +184,12 @@ if [ $error = false ]; then
       mkdir -p $path_dir/lovelace
       echo "$(date) | WARN  | Folder $path_dir/lovelace not exist. Created" >> $log
    fi
-   cp -rf $temp_dir/lovelace/* $path_dir/lovelace
+   cp $temp_dir/lovelace/thermostat_view.yaml $path_dir/lovelace/thermostat_view.yaml
+   cp $temp_dir/lovelace/smarther_dashboard.yam $path_dir/lovelace/smarther_dashboard.yam
+   if [ -f "$path_dir/lovelace/thermostat_card.yaml" ]; then
+      echo "$(date) | WARN  | Cleanup file $path_dir/lovelace/thermostat_card.yaml" >> $log
+      rm -f $path_dir/lovelace/thermostat_card.yaml
+   fi
    
    echo "$(date) | INFO  | Replace keys from secret in $path_dir/conf_smarther.json" >> $log
    cat $temp_dir/smarther/conf_smarther.json \
