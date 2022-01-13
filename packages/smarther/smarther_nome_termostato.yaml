@@ -93,7 +93,7 @@ input_select:
 
   smarther_nome_termostato_programmi:
     options:
-      - "no_prog."
+      - "0_0"
     name: programma nome_termostato
     icon: mdi:calendar-clock
 
